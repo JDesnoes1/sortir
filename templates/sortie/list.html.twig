@@ -5,7 +5,7 @@
 
     {% for sortie in sorties %}
         <article>
-            <p>Nom sortie : {{ sortie.nom }}</p>
+            <p>Nom sortie : <a href="{{ path('sortie_details', {'id': sortie.id}) }}">{{ sortie.nom }}</a></p>
             <p>Date début sortie : {{ sortie.dateHeureDebut | date('d/m/y H:i') }}</p>
             <p>Durée de la sortie : {{ sortie.duree }}</p>
             <p>Nb inscription max : {{ sortie.nbInscriptionsMax }}</p>
