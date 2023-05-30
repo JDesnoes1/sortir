@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Liste des sorties !</h2>
+
+    {% for sortie in sorties %}
+        <article>
+            <p>{{ sortie.nom }}</p>
+            <p>{{ sortie.campus.nom }}</p>
+            <p>{{ sortie.duree }}</p>
+        </article>
+    {% endfor %}
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+
