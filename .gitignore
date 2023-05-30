@@ -24,7 +24,6 @@
 
 ### Eclipse ###
 .metadata
-bin/
 tmp/
 *.tmp
 *.bak
@@ -206,12 +205,12 @@ fabric.properties
 # Reference: https://phpunit.de/
 
 # Generated files
-.phpunit.result.cache
+# .phpunit.result.cache
 .phpunit.cache
 
 # PHPUnit
 /app/phpunit.xml
-/phpunit.xml
+# /phpunit.xml
 
 # Build data
 /build/
