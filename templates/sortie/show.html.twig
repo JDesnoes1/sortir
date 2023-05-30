@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block body %}
+
+    <h2>Details de la sortie !</h2>
+
+    <section>
+        <p>Nom de la sortie : {{ sortie.nom }}</p>
+        <p>Date et heure de la sortie : {{ sortie.dateHeureDebut | date('d-m-Y-H-i-s') }}</p>
+        <p>Date limite d'inscription : {{ sortie.duree }}</p>
+        <p>Participants {{ sortie.nbInscriptionsMax }}</p>
+        <p>Descriptions et infos {{ sortie.infosSortie }}</p>
+        <p>Campus : {{ sortie.campus.nom }}</p>
+        <p>Lieu : {{ sortie.lieu.nom }}</p>
+        <p>Rue : {{ sortie.lieu.rue }}</p>
+        <p>Code postal : {{ sortie.lieu.ville.codePostal}}</p>
+
+
+
+
+
+    </section>
+
+
+
+
+{% endblock %}
+

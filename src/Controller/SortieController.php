@@ -18,4 +18,20 @@ class SortieController extends AbstractController
             'sorties' => $sorties,
         ]);
     }
+
+
+    #[Route('/{id}', name : 'details', requirements: ["id"=>"\d+"])]
+    public function show(SortieRepository $sortieRepository, int $id): Response
+    {
+        $sortie= $sortieRepository->find($id);
+
+        if(!$sortie) throw $this->createNotFoundException("Oups cette sortie n'existe pas !");
+
+        return $this->render('sortie/show.html.twig', [
+            'sortie'=>$sortie
+        ]);
+
+
+    }
 }
+
