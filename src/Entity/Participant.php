@@ -34,7 +34,7 @@ class Participant extends User
     private ?bool $actif = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $roles = null;
+    private ?array $roles = null;
 
     #[ORM\OneToMany(mappedBy: 'participant', targetEntity: Sortie::class)]
     private Collection $sorties;
@@ -129,12 +129,16 @@ class Participant extends User
         return $this;
     }
 
-    public function getRoles(): ?string
+    public function getRoles(): array
     {
-        return $this->roles;
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
     }
 
-    public function setRoles(?string $roles): self
+    public function setRoles(array $roles): self
     {
         $this->roles = $roles;
 
