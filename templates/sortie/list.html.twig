@@ -9,7 +9,7 @@
             <p>Date début sortie : {{ sortie.dateHeureDebut | date('d/m/y H:i') }}</p>
             <p>Durée de la sortie : {{ sortie.duree }}</p>
             <p>Nb inscription max : {{ sortie.nbInscriptionsMax }}</p>
-            <p>Organisateur : {{ sortie.participant.prenom }}</p>
+           {# <p>Organisateur : {{ sortie.participant.prenom }}</p>#}
             <p>Etat de la sortie : {{ sortie.etat.libelle}}</p>
         </article>
     {% endfor %}

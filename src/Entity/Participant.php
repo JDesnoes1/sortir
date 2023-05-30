@@ -25,7 +25,7 @@ class Participant extends User
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $mail = null;
+    private ?string $email = null;
 
     #[ORM\Column(length: 255)]
     private ?string $motPasse = null;
@@ -93,14 +93,14 @@ class Participant extends User
         return $this;
     }
 
-    public function getMail(): ?string
+    public function getEmail(): ?string
     {
-        return $this->mail;
+        return $this->email;
     }
 
-    public function setMail(string $mail): self
+    public function setEmail(string $email): self
     {
-        $this->mail = $mail;
+        $this->email = $email;
 
         return $this;
     }
