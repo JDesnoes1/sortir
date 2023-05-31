@@ -59,6 +59,27 @@ class SortieController extends AbstractController
         return $this->render('sortie/add.html.twig', [
             'sortieForm' => $sortieForm->createView()
         ]);
+
+    }
+    #[Route('/update/{id}', name: 'update', requirements: ["id" => "\d+"])]
+    public function edit(int $id, SortieRepository $sortieRepository, Request $request)
+    {
+
+        $sortie = $sortieRepository->find($id);
+
+        $sortieForm = $this->createForm(SortieType::class, $sortie);
+        $sortieForm->handleRequest($request);
+
+        if ($sortieForm->isSubmitted()){
+            $sortieRepository->save($sortie, true);
+            return $this->redirectToRoute('sortie_list');
+        }
+
+
+        return $this->render('sortie/update.html.twig', [
+            'sortieForm' => $sortieForm->createView()
+        ]);
+
     }
 }
 
