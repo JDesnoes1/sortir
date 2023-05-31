@@ -40,12 +40,12 @@ class SortieController extends AbstractController
     #[Route('/add', name: 'add')]
     public function add(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository): Response {
 
-        $participant = $this->getUser()->getUserIdentifier();
-
+        $username = $this->getUser()->getUserIdentifier();
+        $participant = $participantRepository->findOneBy(['username' => $username]);
         $sortie = new Sortie();
-        $sortieForm = $this->createForm(SortieType::class, $sortie);
 
-        $sortie->setParticipant();
+        $sortieForm = $this->createForm(SortieType::class, $sortie);
+        $sortie->setParticipant($participant);
 
         //Permet d'extraire les données du formulaire
         $sortieForm->handleRequest($request);
