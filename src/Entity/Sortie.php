@@ -46,16 +46,16 @@ class Sortie
     #[ORM\JoinColumn(nullable: false)]
     private ?Campus $campus = null;
 
-    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\ManyToOne(inversedBy: 'sortie')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Participant $participant = null;
 
-    #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'sorties_participants')]
-    private Collection $participant_sortie;
+    #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'sortieParticipant')]
+    private Collection $participants;
 
     public function __construct()
     {
-        $this->participant_sortie = new ArrayCollection();
+        $this->participants = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -186,26 +186,30 @@ class Sortie
     /**
      * @return Collection<int, Participant>
      */
-    public function getParticipantSortie(): Collection
+    public function getParticipants(): Collection
     {
-        return $this->participant_sortie;
+        return $this->participants;
     }
 
-    public function addParticipantSortie(Participant $participantSortie): self
+    public function addParticipant(Participant $participant): self
     {
-        if (!$this->participant_sortie->contains($participantSortie)) {
-            $this->participant_sortie->add($participantSortie);
+        if (!$this->participants->contains($participant)) {
+            $this->participants->add($participant);
+            $participant->addSortieParticipant($this);
         }
 
         return $this;
     }
 
-    public function removeParticipantSortie(Participant $participantSortie): self
+    public function removeParticipant(Participant $participant): self
     {
-        $this->participant_sortie->removeElement($participantSortie);
+        if ($this->participants->removeElement($participant)) {
+            $participant->removeSortieParticipant($this);
+        }
 
         return $this;
     }
+
 
 
 }

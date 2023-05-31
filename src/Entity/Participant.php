@@ -6,14 +6,30 @@ use App\Repository\ParticipantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
-class Participant extends User
+#[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
+class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\Column(length: 180, unique: true)]
+    private ?string $username = null;
+
+    #[ORM\Column]
+    private array $roles = [];
+
+    /**
+     * @var string The hashed password
+     */
+    #[ORM\Column]
+    private ?string $password = null;
 
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
@@ -25,36 +41,109 @@ class Participant extends User
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $email = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $motPasse = null;
+    private ?string $mail = null;
 
     #[ORM\Column]
-    private ?bool $actif = null;
+    private ?bool $actif = true;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?array $roles = null;
-
-    #[ORM\OneToMany(mappedBy: 'participant', targetEntity: Sortie::class)]
-    private Collection $sorties;
-
-    #[ORM\ManyToMany(targetEntity: Sortie::class, mappedBy: 'participant_sortie')]
-    private Collection $sorties_participants;
-
-    #[ORM\ManyToOne(inversedBy: 'participant')]
+    #[ORM\ManyToOne(inversedBy: 'participants')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Campus $campus = null;
 
+    #[ORM\OneToMany(mappedBy: 'participant', targetEntity: Sortie::class)]
+    private Collection $sortie;
+
+    #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'participants')]
+    private Collection $sortieParticipant;
+
     public function __construct()
     {
-        $this->sorties_participants = new ArrayCollection();
+        $this->sortie = new ArrayCollection();
+        $this->sortieParticipant = new ArrayCollection();
     }
-
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @deprecated since Symfony 5.3, use getUserIdentifier instead
+     */
+    public function getUsername(): string
+    {
+        return (string) $this->username;
+    }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->username;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * Returning a salt is only needed, if you are not using a modern
+     * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
+     *
+     * @see UserInterface
+     */
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 
     public function getNom(): ?string
@@ -93,26 +182,14 @@ class Participant extends User
         return $this;
     }
 
-    public function getEmail(): ?string
+    public function getMail(): ?string
     {
-        return $this->email;
+        return $this->mail;
     }
 
-    public function setEmail(string $email): self
+    public function setMail(string $mail): self
     {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    public function getMotPasse(): ?string
-    {
-        return $this->motPasse;
-    }
-
-    public function setMotPasse(string $motPasse): self
-    {
-        $this->motPasse = $motPasse;
+        $this->mail = $mail;
 
         return $this;
     }
@@ -129,79 +206,6 @@ class Participant extends User
         return $this;
     }
 
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
-
-    public function setRoles(array $roles): self
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Sortie>
-     */
-    public function getSorties(): Collection
-    {
-        return $this->sorties;
-    }
-
-    public function addSorty(Sortie $sorty): self
-    {
-        if (!$this->sorties->contains($sorty)) {
-            $this->sorties->add($sorty);
-            $sorty->setParticipant($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSorty(Sortie $sorty): self
-    {
-        if ($this->sorties->removeElement($sorty)) {
-            // set the owning side to null (unless already changed)
-            if ($sorty->getParticipant() === $this) {
-                $sorty->setParticipant(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Sortie>
-     */
-    public function getSortiesParticipants(): Collection
-    {
-        return $this->sorties_participants;
-    }
-
-    public function addSortiesParticipant(Sortie $sortiesParticipant): self
-    {
-        if (!$this->sorties_participants->contains($sortiesParticipant)) {
-            $this->sorties_participants->add($sortiesParticipant);
-            $sortiesParticipant->addParticipantSortie($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSortiesParticipant(Sortie $sortiesParticipant): self
-    {
-        if ($this->sorties_participants->removeElement($sortiesParticipant)) {
-            $sortiesParticipant->removeParticipantSortie($this);
-        }
-
-        return $this;
-    }
-
     public function getCampus(): ?Campus
     {
         return $this->campus;
@@ -214,4 +218,57 @@ class Participant extends User
         return $this;
     }
 
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getSortie(): Collection
+    {
+        return $this->sortie;
+    }
+
+    public function addSortie(Sortie $sortie): self
+    {
+        if (!$this->sortie->contains($sortie)) {
+            $this->sortie->add($sortie);
+            $sortie->setParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSortie(Sortie $sortie): self
+    {
+        if ($this->sortie->removeElement($sortie)) {
+            // set the owning side to null (unless already changed)
+            if ($sortie->getParticipant() === $this) {
+                $sortie->setParticipant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getSortieParticipant(): Collection
+    {
+        return $this->sortieParticipant;
+    }
+
+    public function addSortieParticipant(Sortie $sortieParticipant): self
+    {
+        if (!$this->sortieParticipant->contains($sortieParticipant)) {
+            $this->sortieParticipant->add($sortieParticipant);
+        }
+
+        return $this;
+    }
+
+    public function removeSortieParticipant(Sortie $sortieParticipant): self
+    {
+        $this->sortieParticipant->removeElement($sortieParticipant);
+
+        return $this;
+    }
 }
