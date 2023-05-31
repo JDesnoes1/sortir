@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} | Add
+{% endblock %}
+
+{% block body %}
+    <div>
+        {{ form_start(sortieForm)}}
+        {{ form_widget(sortieForm)}}
+        <button class="">{% block buttonLabel %}Submit{% endblock %}</button>
+        {{ form_end(sortieForm)}}
+    </div>
+{% endblock %}
+

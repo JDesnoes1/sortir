@@ -2,8 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Participant;
+use App\Entity\Sortie;
+use App\Form\SortieType;
+use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 #[Route('/sortie', name: 'sortie_')]
@@ -30,8 +35,30 @@ class SortieController extends AbstractController
         return $this->render('sortie/show.html.twig', [
             'sortie'=>$sortie
         ]);
+    }
 
+    #[Route('/add', name: 'add')]
+    public function add(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository): Response {
 
+        $participant = $this->getUser()->getUserIdentifier();
+
+        $sortie = new Sortie();
+        $sortieForm = $this->createForm(SortieType::class, $sortie);
+
+        $sortie->setParticipant();
+
+        //Permet d'extraire les données du formulaire
+        $sortieForm->handleRequest($request);
+
+        if($sortieForm->isSubmitted()){
+            $sortieRepository->save($sortie, true);
+            return $this->redirectToRoute('sortie_list');
+
+        }
+
+        return $this->render('sortie/add.html.twig', [
+            'sortieForm' => $sortieForm->createView()
+        ]);
     }
 }
 
