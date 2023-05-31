@@ -92,5 +92,20 @@ class SortieController extends AbstractController
         ]);
 
     }
+    #[Route('/delete/{id}', name: 'delete', requirements: ["id" => "\d+"])]
+    public function delete(int $id, SortieRepository $sortieRepository)
+    {
+
+        $sortie = $sortieRepository->find($id);
+
+        //Suppression de la série
+        $sortieRepository->remove($sortie, true);
+
+
+        // $this->addFlash('success', $sortie->getName() . ' has been removed !');
+
+        return $this->redirectToRoute('sortie_list');
+    }
+
 }
 
