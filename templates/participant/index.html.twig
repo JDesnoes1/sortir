@@ -10,11 +10,11 @@
 
     <div class="ShowUser">
         <h3>Profil de {{ user.username }}</h3>
-        <p>Pseudo : {{ user.username }}</p>
-        <p>Prenom : {{ user.prenom }}</p>
-        <p>Nom : {{ user.nom }}</p>
-        <p>Email : {{ user.mail }}</p>
-        <p>Telephone : {{ user.telephone }}</p>
-
+        <form action="{{ path('app_modifier_user', {'id': user.id}) }}" method="POST">
+            {{ form_widget(form) }}
+            <button type="submit" class="btn btn-primary">Enregistrer </button>
+        </form>
     </div>
+
+
 {% endblock %}
