@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\RegistrationFormType;
 use App\Repository\ParticipantRepository;
 use App\Form\EditUserType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -45,7 +46,7 @@ class ParticipantController extends AbstractController
             return $this->redirectToRoute('sortie_list', ['id' => $user->getId()]);
         }
 
-        return $this->render('participant/edit.html.twig', [
+        return $this->render('sortie/list.html.twig', [
             'form' => $form->createView(),
             'user' => $user,
         ]);
