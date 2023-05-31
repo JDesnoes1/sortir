@@ -13,8 +13,9 @@
     <title>{% block title %} Sortir ! {% endblock %}</title>
 
 </head>
-<div class='container'>
-    <body>
+
+<body>
+    <div class='container'>
     <header>
         {{ include('menu/nav.html.twig') }}
     </header>
@@ -22,7 +23,8 @@
     <main>
         {% block body %} c'est la base {% endblock %}
     </main>
-    </body>
-</div>
+
+    </div>
+</body>
 
 </html>
