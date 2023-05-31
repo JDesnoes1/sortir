@@ -7,6 +7,7 @@ use App\Entity\Sortie;
 use App\Form\SortieType;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
+use App\Repository\VilleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,14 +39,24 @@ class SortieController extends AbstractController
     }
 
     #[Route('/add', name: 'add')]
-    public function add(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository): Response {
+    public function add(
+        Request $request,
+        SortieRepository $sortieRepository,
+        ParticipantRepository $participantRepository,
+        VilleRepository $villeRepository
+    ): Response {
 
         $username = $this->getUser()->getUserIdentifier();
         $participant = $participantRepository->findOneBy(['username' => $username]);
         $sortie = new Sortie();
 
+        //A faire plus tard, tips : QueryBuilder
+        /*$villes = $villeRepository->findAll();*/
+
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortie->setParticipant($participant);
+
+
 
         //Permet d'extraire les données du formulaire
         $sortieForm->handleRequest($request);
