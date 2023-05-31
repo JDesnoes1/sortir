@@ -8,9 +8,11 @@ use App\Form\SortieType;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 #[Route('/sortie', name: 'sortie_')]
 class SortieController extends AbstractController
@@ -73,10 +75,18 @@ class SortieController extends AbstractController
 
     }
     #[Route('/update/{id}', name: 'update', requirements: ["id" => "\d+"])]
-    public function edit(int $id, SortieRepository $sortieRepository, Request $request)
+    public function edit(int $id, SortieRepository $sortieRepository, Request $request, ParticipantRepository $participantRepository)
     {
 
         $sortie = $sortieRepository->find($id);
+        $username = $this->getUser()->getUserIdentifier();
+        $participant = $participantRepository->findOneBy(['username' => $username]);
+
+        if($sortie->getParticipant()->getId() !== $participant->getId()){
+            return $this->render('sortie/show.html.twig', [
+                'sortie'=>$sortie
+            ]);
+        }
 
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
@@ -93,11 +103,18 @@ class SortieController extends AbstractController
 
     }
     #[Route('/delete/{id}', name: 'delete', requirements: ["id" => "\d+"])]
-    public function delete(int $id, SortieRepository $sortieRepository)
+    public function delete(int $id, SortieRepository $sortieRepository, ParticipantRepository $participantRepository)
     {
 
         $sortie = $sortieRepository->find($id);
+        $username = $this->getUser()->getUserIdentifier();
+        $participant = $participantRepository->findOneBy(['username' => $username]);
 
+        if($sortie->getParticipant()->getId() !== $participant->getId()){
+            return $this->render('sortie/show.html.twig', [
+                'sortie'=>$sortie
+            ]);
+        }
         //Suppression de la série
         $sortieRepository->remove($sortie, true);
 
@@ -107,5 +124,27 @@ class SortieController extends AbstractController
         return $this->redirectToRoute('sortie_list');
     }
 
+    #[Route('/inscription/{sortieId}', name: 'inscription')]
+    public function inscriptionSortie(int $sortieId, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, EntityManagerInterface $entityManager, SessionInterface $session)
+    {
+        // Récupérer la formation et le participant correspondant
+        $sortie = $sortieRepository->find($sortieId);
+        $username = $this->getUser()->getUserIdentifier();
+        $participant = $participantRepository->findOneBy(['username' => $username]);
+
+        if($sortie->getParticipant()->getId() === $participant->getId()){
+            return $this->render('sortie/show.html.twig', [
+                'sortie'=>$sortie
+            ]);
+        }
+        // Insérer le participant dans la table d'association
+        $sortie->addParticipant($participant);
+        $entityManager->flush();
+        // Rediriger ou générer une réponse appropriée
+        $session->getFlashBag()->add('success', 'Vous avez été inscrit avec succès à la sortie.');
+        return $this->render('sortie/show.html.twig', [
+            'sortie'=>$sortie
+        ]);
+    }
 }
 
