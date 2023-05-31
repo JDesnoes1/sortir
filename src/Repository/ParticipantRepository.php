@@ -56,6 +56,11 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
         $this->save($user, true);
     }
 
+    public function findUserById($id)
+    {
+        return $this->findOneBy(['id' => $id]);
+    }
+
 //    /**
 //     * @return Participant[] Returns an array of Participant objects
 //     */
