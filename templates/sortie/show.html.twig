@@ -20,11 +20,8 @@
         <p>Ville : {{ sortie.lieu.ville.nom }}</p>
         <p>Code postal : {{ sortie.lieu.ville.codePostal}}</p>
         <button>S'inscrire</button>
-
-
-
-
-
+        <button><a class="link_button" href="{{ path('sortie_update', {'id':sortie.id}) }}">Modifier </a></button>
+        <button><a class="link_button" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer </a></button>
     </section>
 
 
