@@ -3,18 +3,56 @@
 {% block body %}
     <h2>Liste des sorties !</h2>
 
-<div class="container-sorties">
-    {% for sortie in sorties %}
-        <article class="sortie">
-            <p>Nom sortie : <a href="{{ path('sortie_details', {'id': sortie.id}) }}">{{ sortie.nom }}</a></p>
-            <p>Date début sortie : {{ sortie.dateHeureDebut | date('d/m/y H:i') }}</p>
-            <p>Durée de la sortie : {{ sortie.duree }}</p>
-            <p>Nb inscription max : {{ sortie.nbInscriptionsMax }}</p>
-           {# <p>Organisateur : {{ sortie.participant.prenom }}</p>#}
-            <p>Etat de la sortie : {{ sortie.etat.libelle}}</p>
-        </article>
+    <div class="container-sorties">
+        <table>
+            <thead>
+            <tr>
+                <th>Nom de la sortie</th>
+                <th>Date de la sortie</th>
+                <th>Clôture</th>
+                <th>Inscrits/places</th>
+                <th>Etat</th>
+                <th>Inscrit</th>
+                <th>Organisateur</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for sortie in sorties %}
+                <tr>
+                    <td><a href="{{ path('sortie_details', {'id': sortie.id}) }}">{{ sortie.nom }}</a></td>
+                    <td>{{ sortie.dateHeureDebut | date('d/m/y H:i') }}</td>
+                    <td>{{ sortie.duree }}</td>
+                    <td>{{ sortie.nbInscriptionsMax }}</td>
+                    <td>{{ sortie.etat.libelle }}</td>
+                    <td>{% if sortie.getParticipants().contains(app.user) %}X{% endif %}</td>
+                    <td>{{ sortie.participant.userIdentifier }}</td>
+                    <td>
+                        {% if sortie.participant.id is not same as(app.user.id) %}
+                            <button><a class="link_button" href="{{ path('sortie_details', {'id': sortie.id}) }}">Afficher</a></button>
+                            {% if sortie.getParticipants().contains(app.user) %}
+                                <button><a class="link_button" href="{{ path('sortie_desinscription', {'sortieId': sortie.id}) }}">Se désinscrire</a></button>
+                            {% else %}
+                                <button><a class="link_button" href="{{ path('sortie_inscription', {'sortieId': sortie.id}) }}">S'inscrire</a></button>
+                            {% endif %}
+                        {% endif %}
+                        {% if sortie.participant.id is same as(app.user.id) %}
+                            <button><a class="link_button" href="{{ path('sortie_update', {'id':sortie.id}) }}">Modifier</a></button>
+                            <button><a class="link_button" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a></button>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% for flashMessage in app.session.flashBag.get('success') %}
+        <div class="alert alert-success">
+            {{ flashMessage }}
+        </div>
     {% endfor %}
-</div>
+
 
 {% endblock %}
 
