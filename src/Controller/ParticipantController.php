@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Form\RegistrationFormType;
 use App\Repository\ParticipantRepository;
 use App\Utils\Uploader;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
