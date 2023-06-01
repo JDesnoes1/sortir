@@ -11,7 +11,9 @@
         <p>Telephone : {{ participant.telephone }}</p>
         <p>Mail : {{ participant.mail }}</p>
         <p>Campus : {{ participant.campus.nom }}</p>
+        {% if app.user.id is same as participant.id %}
             <button><a href="{{ path('participant_update',{'id': participant.id}) }}">Modifier</a></button>
+        {% endif %}
 
         {#<form action="{{ path('app_modifier_user', {'id': user.id}) }}" method="POST">
             {{ form_widget(form) }}

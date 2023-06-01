@@ -60,9 +60,10 @@ class ParticipantController extends AbstractController
             );
 
             $participantRepository->save($participant, true);
-            return $this->redirectToRoute('participant_show', ['id' => $participant->getId(),
-                'participant' => $participant
-            ]);
+
+                return $this->redirectToRoute('participant_show', ['id' => $participant->getId(),
+                    'participant' => $participant
+                ]);
         }
 
         return $this->render('participant/update.html.twig', [
