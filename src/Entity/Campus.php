@@ -21,7 +21,7 @@ class Campus
     #[ORM\OneToMany(mappedBy: 'campus', targetEntity: Sortie::class)]
     private Collection $sorties;
 
-    #[ORM\OneToMany(mappedBy: 'campus', targetEntity: Participant::class)]
+    #[ORM\OneToMany(mappedBy: 'campus', targetEntity: Participant::class, cascade: ['remove'])]
     private Collection $participants;
 
     public function __construct()

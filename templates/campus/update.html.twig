@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% embed 'vues/form/default_form.twig' with {'form':campusForm} %}
+        {% block h2 %} Modifier le campus ! {% endblock %}
+        {% block buttonLabel %} Modifier le campus {% endblock %}
+    {% endembed %}
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+
