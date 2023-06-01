@@ -1,28 +1,35 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ path('sortie_list') }}">SortirENI</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+
+        {% if (app.user) %}
+            <a class="navbar-brand" href="{{ path('sortie_list') }}">SortirENI</a>
+        {% else %}
+            <a>SortirENI</a>
+        {% endif %}
+
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                 {% if (app.user) %}
-
-                    <li class="nav-item"><a class="nav-link" href="{{ path('participant_show', {'id': app.user.id}) }}">Mon Profil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('participant_show', {'id': app.user.id}) }}">Mon
+                            Profil</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ path('sortie_add') }}">Ajouter une sortie</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ path('ville_add') }}">Ajouter une ville</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ path('ville_list') }}">Liste des villes</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ path('campus_add') }}">Ajouter un campus</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ path('campus_list') }}">Liste des campus</a></li>
-                    <img class="compte" style="height: 40px; width: 40px; border-radius: 50%" src="{{ asset('img/'~app.user.photo) }}" alt="{{ app.user.nom }}">
-                    <li class="nav-item"><a class="nav-link" href="{{ path('app_logout') }}">Logout ({{ app.user.userIdentifier }})</a></li>
-
+                    <img class="compte" style="height: 40px; width: 40px; border-radius: 50%"
+                         src="{{ asset('img/'~app.user.photo) }}" alt="{{ app.user.nom }}">
+                    <li class="nav-item"><a class="nav-link" href="{{ path('app_logout') }}">Logout
+                            ({{ app.user.userIdentifier }})</a></li>
                 {% else %}
-
                     <li class="nav-item"><a class="nav-link" href="{{ path('app_login') }}">Login</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ path('app_register') }}">Register</a></li>
-
                 {% endif %}
             </ul>
         </div>

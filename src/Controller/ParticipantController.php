@@ -4,11 +4,13 @@ namespace App\Controller;
 
 use App\Form\RegistrationFormType;
 use App\Repository\ParticipantRepository;
-use App\Form\EditUserType;
+use App\Utils\Uploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/participant', name: 'participant_')]
@@ -25,7 +27,10 @@ class ParticipantController extends AbstractController
 
 
     #[Route('/update/{id}', name: 'update')]
-    public function update($id, Request $request, ParticipantRepository $participantRepository): Response
+    public function update($id, Request $request,
+                           ParticipantRepository $participantRepository,
+                           Uploader $uploader,
+                           UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $participant = $participantRepository->find($id);
 
@@ -36,12 +41,32 @@ class ParticipantController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            $participantRepository->save($participant);
-            return $this->redirectToRoute('sortie_list');
+
+            /**
+             * @var UploadedFile $file
+             */
+            $file = $form->get('photo')->getData();
+
+            if ($file) {
+                $newFileName = $uploader->save($file, $participant->getUserIdentifier(), $this->getParameter('upload_photo'));
+                $participant->setPhoto($newFileName);
+            }
+            // encode the plain password
+            $participant->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $participant,
+                    $form->get('Password')->getData()
+                )
+            );
+
+            $participantRepository->save($participant, true);
+            return $this->redirectToRoute('participant_show', ['id' => $participant->getId(),
+                'participant' => $participant
+            ]);
         }
 
         return $this->render('participant/update.html.twig', [
-            'participantForm' => $form->createView(),
+            'participantForm' => $form->createView()
         ]);
     }
 }
