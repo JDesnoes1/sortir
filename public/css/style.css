@@ -1,8 +1,22 @@
-nav{
-    background-color: #fafafa;
+.navbar.navbar-expand-lg.bg-body-tertiary{
+    background-color: #d91c1c;
     box-shadow: 4px 4px 4px rgba(220, 220, 220, 0.0);
 }
 
 .photo-user{
+}
 
+.container-sorties {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Aligne horizontalement les conteneurs au centre */
+}
+
+
+.sortie{
+    border: 2px solid #b0e0ef;
+    border-radius: 8px;
+    margin: 10px;
+    padding: 10px;
+    width: 280px;
 }
