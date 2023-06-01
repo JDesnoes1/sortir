@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Liste des villes</h2>
+
+    <ul>
+    {% for ville in villes %}
+        <br>
+    <li>Ville: {{ ville.nom }}</li>
+    <li>Code postal: {{ ville.codePostal}} </li>
+        <a href="{{ path('ville_update', {'id':ville.id}) }}">Modifier</a> | <a href="{{ path('ville_delete', {'id': ville.id}) }}">Supprimer</a>
+        <br>
+    {% endfor %}
+    </ul>
+
+    <a href="{{ path('ville_add') }}">Ajouter une ville</a>
+
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+
