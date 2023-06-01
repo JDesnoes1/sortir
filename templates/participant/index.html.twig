@@ -3,19 +3,19 @@
 {% block title %}Hello ParticipantController!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
     <div class="ShowUser">
-        <h3>Profil de {{ user.username }}</h3>
-        <div class="profil">
-        <form action="{{ path('app_modifier_user', {'id': user.id}) }}" method="POST">
+        <h3>Profil de {{ app.user.userIdentifier }}</h3>
+        <p>Prenom : {{ app.user.prenom }}</p>
+        <p>Nom : {{ app.user.nom }}</p>
+        <p>Telephone : {{ app.user.telephone }}</p>
+        <p>Mail : {{ app.user.mail }}</p>
+        <p>Campus : {{ app.user.campus.nom }}</p>
+        <button><a href="">Modifier</a></button>
+        {#<form action="{{ path('app_modifier_user', {'id': user.id}) }}" method="POST">
             {{ form_widget(form) }}
             <button type="submit" class="btn btn-primary">Enregistrer </button>
-        </form>
-        </div>
+        </form>#}
     </div>
 
 
