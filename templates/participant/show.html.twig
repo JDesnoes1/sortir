@@ -12,8 +12,12 @@
         <p>Mail : {{ participant.mail }}</p>
         <p>Campus : {{ participant.campus.nom }}</p>
         {% if(participant.id is same as app.user.id) %}
-            <button><a href="http://localhost/sortir/public/participant/update/{{ participant.id }}">Modifier</a></button>
+            <button><a href="">Modifier</a></button>
         {% endif %}
+        {#<form action="{{ path('app_modifier_user', {'id': user.id}) }}" method="POST">
+            {{ form_widget(form) }}
+            <button type="submit" class="btn btn-primary">Enregistrer </button>
+        </form>#}
     </div>
 
 
