@@ -20,7 +20,11 @@
         <p>Ville : {{ sortie.lieu.ville.nom }}</p>
         <p>Code postal : {{ sortie.lieu.ville.codePostal}}</p>
         {% if(sortie.participant.id is not same as(app.user.id) )%}
-        <a href="{{ path('sortie_inscription', {'sortieId': sortie.id}) }}" class="btn btn-primary">S'inscrire</a>
+        {% if sortie.getParticipants().contains(app.user) %}
+            <a href="{{ path('sortie_desinscription', {'sortieId': sortie.id}) }}" class="btn btn-primary">Se désinscrire</a>
+        {% else %}
+            <a href="{{ path('sortie_inscription', {'sortieId': sortie.id}) }}" class="btn btn-primary">S'inscrire</a>
+        {% endif %}
         {% endif %}
         {% if(sortie.participant.id is same as(app.user.id)) %}
         <button><a class="link_button" href="{{ path('sortie_update', {'id':sortie.id}) }}">Modifier </a></button>
@@ -31,10 +35,16 @@
                 {{ flashMessage }}
             </div>
         {% endfor %}
+        <h3>Participants :</h3>
+        {% if sortie.participants is not empty %}
+            <ul>
+                {% for participant in sortie.participants %}
+                    <li>Pseudo : {{ participant.username }} | Nom : {{ participant.nom }} | Prénom : {{ participant.prenom }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Aucun participant pour le moment.</p>
+        {% endif %}
     </section>
-
-
-
-
 {% endblock %}
 
