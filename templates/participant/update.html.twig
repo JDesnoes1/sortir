@@ -1,12 +1,17 @@
-{#{% extends 'base.html.twig' %}
-
-{% block title %}
-
-{% endblock %}
+{% extends 'base.html.twig' %}
 
 {% block body %}
+    {% embed 'vues/form/default_form.twig' with {'form':participantForm} %}
+        {% block h2 %} Modifier la sortie ! {% endblock %}
+        {% block buttonLabel %} Modifier la sortie {% endblock %}
+    {% endembed %}
+{% endblock %}
 
-{% endblock %}#}
+{% block title %}
+    update participant
+{% endblock %}
+
+
 
 
 

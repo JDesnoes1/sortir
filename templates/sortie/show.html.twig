@@ -45,6 +45,7 @@
             <ul>
                 {% for participant in sortie.participants %}
                     <li>Pseudo : {{ participant.username }} | Nom : {{ participant.nom }} | Prénom : {{ participant.prenom }}</li>
+                    <button><a class="link_button" href="{{ path('participant_show', {'id': participant.id}) }}">Voir le profil</a></button>
                 {% endfor %}
             </ul>
         {% else %}
