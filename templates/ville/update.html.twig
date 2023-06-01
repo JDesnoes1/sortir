@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% embed 'vues/form/default_form.twig' with {'form':villeForm} %}
+        {% block h2 %} Modifier la ville ! {% endblock %}
+        {% block buttonLabel %} Modifier la ville {% endblock %}
+    {% endembed %}
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+
