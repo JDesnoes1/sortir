@@ -3,8 +3,9 @@
 {% block body %}
     <h2>Liste des sorties !</h2>
 
+<div class="container-sorties">
     {% for sortie in sorties %}
-        <article>
+        <article class="sortie">
             <p>Nom sortie : <a href="{{ path('sortie_details', {'id': sortie.id}) }}">{{ sortie.nom }}</a></p>
             <p>Date début sortie : {{ sortie.dateHeureDebut | date('d/m/y H:i') }}</p>
             <p>Durée de la sortie : {{ sortie.duree }}</p>
@@ -13,6 +14,8 @@
             <p>Etat de la sortie : {{ sortie.etat.libelle}}</p>
         </article>
     {% endfor %}
+</div>
+
 {% endblock %}
 
 {% block title %}
