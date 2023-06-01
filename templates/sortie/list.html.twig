@@ -1,11 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h2>Liste des sorties !</h2>
+    <br>
+    <h3>Liste des sorties !</h3>
 
     <div class="container-sorties">
-        <table>
-            <thead>
+        <table class="table table-hover">
+        <thead>
             <tr>
                 <th>Nom de la sortie</th>
                 <th>Date de la sortie</th>
@@ -29,17 +30,19 @@
                     <td>{{ sortie.participant.userIdentifier }}</td>
                     <td>
                         {% if sortie.participant.id is not same as(app.user.id) %}
-                            <button><a class="link_button" href="{{ path('sortie_details', {'id': sortie.id}) }}">Afficher</a></button>
+                            <button class="btn btn-outline-primary"><a class="link_button" href="{{ path('sortie_details', {'id': sortie.id}) }}">Afficher</a></button>
                             {% if sortie.getParticipants().contains(app.user) %}
-                                <button><a class="link_button" href="{{ path('sortie_desinscription', {'sortieId': sortie.id}) }}">Se désinscrire</a></button>
+                                <button class="btn btn-outline-primary"><a class="link_button" href="{{ path('sortie_desinscription', {'sortieId': sortie.id}) }}">Se désinscrire</a></button>
                             {% else %}
-                                <button><a class="link_button" href="{{ path('sortie_inscription', {'sortieId': sortie.id}) }}">S'inscrire</a></button>
+                                <button class="btn btn-outline-primary"><a class="link_button" href="{{ path('sortie_inscription', {'sortieId': sortie.id}) }}">S'inscrire</a></button>
                             {% endif %}
                         {% endif %}
+                        <div class="button-tab-container">
                         {% if sortie.participant.id is same as(app.user.id) %}
-                            <button><a class="link_button" href="{{ path('sortie_update', {'id':sortie.id}) }}">Modifier</a></button>
-                            <button><a class="link_button" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a></button>
+                            <button class="btn btn-outline-primary"><a class="link" href="{{ path('sortie_update', {'id':sortie.id}) }}">Modifier</a></button>
+                            <button class="btn btn-outline-primary"><a class="link" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a></button>
                         {% endif %}
+                        </div>
                     </td>
                 </tr>
             {% endfor %}

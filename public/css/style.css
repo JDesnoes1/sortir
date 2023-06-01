@@ -1,10 +1,3 @@
-.navbar.navbar-expand-lg.bg-body-tertiary{
-    background-color: #d91c1c;
-    box-shadow: 4px 4px 4px rgba(220, 220, 220, 0.0);
-}
-
-.photo-user{
-}
 
 .container-sorties {
     display: flex;
@@ -13,7 +6,7 @@
 }
 
 .sortie{
-    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.1);
+    //box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.1);
     border: 2px solid #b0e0ef;
     border-radius: 8px;
     margin: 10px;
@@ -22,7 +15,7 @@
 }
 
 .infosSortie {
-    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.1);
+    //box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.1);
     border: 2px solid #b0e0ef;
     border-radius: 8px;
     margin: 10px;
@@ -31,7 +24,7 @@
 }
 
 .nbParticipants{
-    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.1);
+    //box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.1);
     border: 2px solid #b0e0ef;
     border-radius: 8px;
     margin: 10px;
@@ -40,7 +33,7 @@
 }
 
 .profil{
-    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.1);
+    //box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.1);
     border: 2px solid #b0e0ef;
     border-radius: 8px;
     margin: 10px;
