@@ -21,7 +21,7 @@ class VilleController extends AbstractController
 
 
 
-        return $this->render('ville/villes.html.twig', [
+        return $this->render('ville/list.html.twig', [
             'villes' => $villes
         ]);
     }

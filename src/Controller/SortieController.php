@@ -55,7 +55,7 @@ class SortieController extends AbstractController
         $sortie = new Sortie();
 
         //A faire plus tard, tips : QueryBuilder
-        /*$villes = $villeRepository->findAll();*/
+        /*$campus = $villeRepository->findAll();*/
 
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortie->setParticipant($participant);
