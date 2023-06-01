@@ -24,10 +24,11 @@
                     <td><a href="{{ path('sortie_details', {'id': sortie.id}) }}">{{ sortie.nom }}</a></td>
                     <td>{{ sortie.dateHeureDebut | date('d/m/y H:i') }}</td>
                     <td>{{ sortie.duree }}</td>
-                    <td>{{ sortie.nbInscriptionsMax }}</td>
+                    <td>{{ sortie.participants.count }}/{{ sortie.nbInscriptionsMax }}</td>
                     <td>{{ sortie.etat.libelle }}</td>
                     <td>{% if sortie.getParticipants().contains(app.user) %}X{% endif %}</td>
-                    <td>{{ sortie.participant.userIdentifier }}</td>
+                    <td> <a class="link_button" href="{{ path('participant_show', {'id': sortie.participant.id}) }}">{{ sortie.participant.userIdentifier }}</a></td>
+
                     <td>
                         {% if sortie.participant.id is not same as(app.user.id) %}
                             <button class="btn btn-outline-primary"><a class="link_button" href="{{ path('sortie_details', {'id': sortie.id}) }}">Afficher</a></button>
