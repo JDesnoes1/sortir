@@ -29,14 +29,16 @@ class SortieController extends AbstractController
 
 
     #[Route('/{id}', name : 'details', requirements: ["id"=>"\d+"])]
-    public function show(SortieRepository $sortieRepository, int $id): Response
+    public function show(SortieRepository $sortieRepository, int $id, ParticipantRepository $participantRepository): Response
     {
         $sortie= $sortieRepository->find($id);
+        $participants = $sortie->getParticipants();
 
         if(!$sortie) throw $this->createNotFoundException("Oups cette sortie n'existe pas !");
 
         return $this->render('sortie/show.html.twig', [
-            'sortie'=>$sortie
+            'sortie'=>$sortie,
+            'participants' => $participants
         ]);
     }
 
@@ -144,6 +146,29 @@ class SortieController extends AbstractController
         $session->getFlashBag()->add('success', 'Vous avez été inscrit avec succès à la sortie.');
         return $this->render('sortie/show.html.twig', [
             'sortie'=>$sortie
+        ]);
+    }
+
+    #[Route('/desinscription/{sortieId}', name: 'desinscription')]
+    public function desinscriptionSortie(int $sortieId, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, EntityManagerInterface $entityManager, SessionInterface $session)
+    {
+        // Récupérer la sortie et le participant correspondant
+        $sortie = $sortieRepository->find($sortieId);
+        $username = $this->getUser()->getUserIdentifier();
+        $participant = $participantRepository->findOneBy(['username' => $username]);
+
+        // Vérifier si le participant est inscrit à la sortie
+        /*if (!$sortie->getParticipants()->contains($participant)) {
+        }*/
+
+        // Supprimer le participant de la table d'association
+        $sortie->removeParticipant($participant);
+        $entityManager->flush();
+
+        // Rediriger ou générer une réponse appropriée
+        $session->getFlashBag()->add('success', 'Vous avez été désinscrit avec succès de la sortie.');
+        return $this->render('sortie/show.html.twig', [
+            'sortie' => $sortie
         ]);
     }
 }
