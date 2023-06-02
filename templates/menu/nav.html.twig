@@ -48,23 +48,20 @@
                     </ul>
                 </li>
 
-               <div class="compte">
-                    <div class="img">
-                        <img class="compte" style="height: 40px; width: 40px; border-radius: 50%"
-                             src="{{ asset('img/'~app.user.photo) }}" alt="{{ app.user.nom }}">
-                    </div>
-                   <div class="logout">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter
-                                ({{ app.user.userIdentifier }})</a></li>
-                   </div>
+                <div class="compte">
+                    <img class="compte" style="height: 40px; width: 40px; border-radius: 50%"
+                         src="{{ asset('img/'~app.user.photo) }}" alt="{{ app.user.nom }}">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter
+                            ({{ app.user.userIdentifier }})</a></li>
 
                     {% else %}
                         <li class="nav-item"><a class="nav-link" href="{{ path('app_login') }}">Se connecter</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ path('app_register') }}">Enregistrer un
                                 nouveau participant</a></li>
                     {% endif %}
-               </div>
+                </div>
 
             </ul>
         </div>

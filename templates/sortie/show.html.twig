@@ -23,7 +23,7 @@
 
         {% if(sortie.participant.id is not same as(app.user.id) ) %}
             {% if sortie.getParticipants().contains(app.user) %}
-                <a href="{{ path('sortie_desinscription', {'sortieId': sortie.id}) }}" class="btn btn-primary">Se
+                <a href="{{ path('sortie_desinscription', {'sortieId': sortie.id}) }}" class="btn btn-outline-primary">Se
                     désinscrire</a>
             {% else %}
                 {% if sortie.getParticipants.count<sortie.getNbInscriptionsMax() and sortie.etat.libelle == "Ouverte"%}
@@ -37,10 +37,10 @@
         {% endif %}
         {% endif %}
         {% if(sortie.participant.id is same as(app.user.id)) %}
-            <button><a class="link_button" href="{{ path('sortie_update', {'id':sortie.id}) }}">Modifier </a>
-            </button>
-            <button><a class="link_button" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer </a>
-            </button>
+            <a class="btn btn-outline-primary" href="{{ path('sortie_update', {'id':sortie.id}) }}">Modifier </a>
+
+            <a class="btn btn-outline-primary" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer </a>
+
         {% endif %}
         {% for flashMessage in app.session.flashBag.get('success') %}
             <div class="alert alert-success">
@@ -57,9 +57,9 @@
                     <li>Pseudo : {{ participant.username }} | Nom : {{ participant.nom }} | Prénom
                         : {{ participant.prenom }}</li>
                     {% if app.user.id is not same as participant.id %}
-                        <button><a class="link_button"
+                        <a class="btn btn-outline-primary"
                                    href="{{ path('participant_show', {'id': participant.id}) }}">Voir le profil</a>
-                        </button>
+
                     {% endif %}
                 {% endfor %}
             </ul>

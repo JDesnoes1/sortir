@@ -32,19 +32,19 @@
 
                     <td>
                         {% if sortie.participant.id is not same as(app.user.id) %}
-                            <button class="btn btn-outline-primary"><a class="link_button" href="{{ path('sortie_details', {'id': sortie.id}) }}">Afficher</a></button>
+                            <a class="btn btn-outline-primary" href="{{ path('sortie_details', {'id': sortie.id}) }}">Afficher</a>
                             {% if sortie.getParticipants().contains(app.user) %}
-                                <button class="btn btn-outline-primary"><a class="link_button" href="{{ path('sortie_desinscription', {'sortieId': sortie.id}) }}">Se désinscrire</a></button>
+                                <a class="btn btn-outline-primary" href="{{ path('sortie_desinscription', {'sortieId': sortie.id}) }}">Se désinscrire</a>
                             {% else %}
                                 {% if sortie.getParticipants.count<sortie.getNbInscriptionsMax() and sortie.etat.libelle == 'Ouverte' %}
-                                <button class="btn btn-outline-primary"><a class="link_button" href="{{ path('sortie_inscription', {'sortieId': sortie.id}) }}">S'inscrire</a></button>
+                                <a class="btn btn-outline-primary" href="{{ path('sortie_inscription', {'sortieId': sortie.id}) }}">S'inscrire</a>
                             {% endif %}
                             {% endif %}
                         {% endif %}
                         <div class="button-tab-container">
                         {% if sortie.participant.id is same as(app.user.id) %}
-                            <button class="btn btn-outline-primary"><a class="link" href="{{ path('sortie_update', {'id':sortie.id}) }}">Modifier</a></button>
-                            <button class="btn btn-outline-primary"><a class="link" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a></button>
+                            <a class="btn btn-outline-primary" href="{{ path('sortie_update', {'id':sortie.id}) }}">Modifier</a>
+                            <a class="btn btn-outline-primary" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a>
                         {% endif %}
                         </div>
                     </td>

@@ -8,10 +8,10 @@
     <div>
         {{ form_start(sortieForm) }}
         {{ form_widget(sortieForm) }}
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalLieu">
+        <a type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modalLieu">
             Ajouter un lieu
-        </button>
-        <button>{% block buttonLabel %}Ajouter une sortie{% endblock %}</button>
+        </a>
+        <a class="btn btn-outline-primary">{% block buttonLabel %}Ajouter une sortie{% endblock %}</a>
         {{ form_end(sortieForm) }}
         <div class="modal fade" id="modalLieu" tabindex="-1" aria-labelledby="modalLieuLabel" aria-hidden="true">
             <div class="modal-dialog">

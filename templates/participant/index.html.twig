@@ -12,7 +12,7 @@
         <p>Mail : {{ participant.mail }}</p>
         <p>Campus : {{ participant.campus.nom }}</p>
         {% if(participant.id is same as app.user.id) %}
-            <button><a href="http://localhost/sortir/public/participant/update/{{ participant.id }}">Modifier</a></button>
+            <a class="btn btn-outline-primary" href="http://localhost/sortir/public/participant/update/{{ participant.id }}">Modifier</a>
         {% endif %}
     </div>
 
