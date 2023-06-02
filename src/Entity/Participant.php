@@ -5,10 +5,12 @@ namespace App\Entity;
 use App\Repository\ParticipantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
@@ -19,6 +21,13 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank(message: "Le pseudo ne peut pas être null")]
+    #[Assert\Length(
+        min: 2,
+        max: 100,
+        minMessage: "Il faut {{ limit }} caractères minimum !",
+        maxMessage: "Vous ne pouvez pas dépasser {{ limit }} caractères !"
+    )]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $username = null;
 
@@ -28,19 +37,47 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
+    #[Assert\NotBlank(message: "Le pseudo ne peut pas être null")]
+    #[Assert\Length(
+        min: 6,
+        max: 255,
+        minMessage: "Il faut {{ limit }} caractères minimum !",
+        maxMessage: "Vous ne pouvez pas dépasser {{ limit }} caractères !"
+    )]
     #[ORM\Column]
     private ?string $password = null;
 
+    #[Assert\NotBlank(message: "Le pseudo ne peut pas être null")]
+    #[Assert\Length(
+        min: 2,
+        max: 100,
+        minMessage: "Il faut {{ limit }} caractères minimum !",
+        maxMessage: "Vous ne pouvez pas dépasser {{ limit }} caractères !"
+    )]
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
 
+    #[Assert\NotBlank(message: "Le pseudo ne peut pas être null")]
+    #[Assert\Length(
+        min: 2,
+        max: 100,
+        minMessage: "Il faut {{ limit }} caractères minimum !",
+        maxMessage: "Vous ne pouvez pas dépasser {{ limit }} caractères !"
+    )]
     #[ORM\Column(length: 100)]
     private ?string $prenom = null;
-
     #[ORM\Column(length: 10)]
     private ?string $telephone = null;
 
-    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le pseudo ne peut pas être null")]
+    #[Assert\Email()]
+    #[Assert\Length(
+        min: 4,
+        max: 255,
+        minMessage: "Il faut {{ limit }} caractères minimum !",
+        maxMessage: "Vous ne pouvez pas dépasser {{ limit }} caractères !"
+    )]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $mail = null;
 
     #[ORM\Column]

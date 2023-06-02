@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -16,21 +17,34 @@ class Sortie
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank()]
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
 
+    #[Assert\NotBlank()]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
+    #[Assert\NotBlank()]
     #[ORM\Column]
     private ?int $duree = null;
 
+    #[Assert\NotBlank()]
+    #[Assert\LessThan(propertyPath: "dateHeureDebut", message: "La date limite d'inscription doit être inférieur à la date de début de sortie.")]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateLimiteInscription = null;
 
+    #[Assert\NotBlank()]
     #[ORM\Column]
     private ?int $nbInscriptionsMax = null;
 
+    #[Assert\NotBlank()]
+    #[Assert\Length(
+        min: 20,
+        max: 800,
+        minMessage: "Il faut {{ limit }} caractères minimum !",
+        maxMessage: "Vous ne pouvez pas dépasser {{ limit }} caractères !"
+    )]
     #[ORM\Column(length: 800)]
     private ?string $infosSortie = null;
 
