@@ -50,3 +50,7 @@
 .container-sorties table td:not(:last-child) {
     border-right: 1px solid #ccc;
 }
+
+li{
+    list-style: none;
+}

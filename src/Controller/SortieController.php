@@ -7,6 +7,7 @@ use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Form\LieuType;
 use App\Form\SortieType;
+use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
@@ -67,17 +68,6 @@ class SortieController extends AbstractController
         $sortie->setParticipant($participant);
 
         //Permet d'extraire les données du formulaire
-        $sortieForm->handleRequest($request);
-
-            $lieuForm->handleRequest($request);
-
-            if ($lieuForm->isSubmitted() && $lieuForm->isValid()) {
-                $lieuRepository->save($lieu, true);
-                $this->addFlash('success', 'Le lieu a été ajouté avec succès.');
-                return $this->redirectToRoute('sortie_add');
-            }
-
-
             $sortieForm->handleRequest($request);
 
             if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
@@ -119,6 +109,7 @@ class SortieController extends AbstractController
         ]);
 
     }
+
     #[Route('/delete/{id}', name: 'delete', requirements: ["id" => "\d+"])]
     public function delete(int $id, SortieRepository $sortieRepository, ParticipantRepository $participantRepository)
     {
@@ -164,7 +155,7 @@ class SortieController extends AbstractController
         // Rediriger ou générer une réponse appropriée
         $session->getFlashBag()->add('success', 'Vous avez été inscrit avec succès à la sortie.');
         return $this->render('sortie/show.html.twig', [
-            'sortie'=>$sortie
+            'sortie' => $sortie
         ]);
     }
 
@@ -180,6 +171,11 @@ class SortieController extends AbstractController
         /*if (!$sortie->getParticipants()->contains($participant)) {
         }*/
 
+        if ($sortie->getDateHeureDebut() < new \DateTime()) {
+            return $this->render('sortie/show.html.twig', [
+                'sortie' => $sortie
+            ]);
+        }
         // Supprimer le participant de la table d'association
         $sortie->removeParticipant($participant);
         $entityManager->flush();
@@ -190,5 +186,28 @@ class SortieController extends AbstractController
             'sortie' => $sortie
         ]);
     }
+
+    #[Route('/cancel/{id}/{reason}', name: 'cancel', requirements: ["id" => "\d+"])]
+    public function cancel(int $id, string $reason,SortieRepository $sortieRepository,EtatRepository $etatRepository, ParticipantRepository $participantRepository)
+    {
+        $sortie = $sortieRepository->find($id);
+        $etat=$etatRepository->findOneBy(['libelle'=>'Annulée']);
+        $username = $this->getUser()->getUserIdentifier();
+        $participant = $participantRepository->findOneBy(['username' => $username]);
+
+        if ($sortie->getParticipant()->getId() !== $participant->getId()) {
+            return $this->render('sortie/show.html.twig', [
+                'sortie' => $sortie
+            ]);
+        }
+            $sortie->setEtat($etat);
+            $sortie->setInfosSortie($reason);
+            $sortieRepository->save($sortie, true);
+            return $this->redirectToRoute('sortie_list');
+
+    }
+
+
+
 }
 
