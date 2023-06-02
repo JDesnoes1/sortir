@@ -1,12 +1,17 @@
-{#{% extends 'base.html.twig' %}
-
-{% block title %}
-
-{% endblock %}
+{% extends 'base.html.twig' %}
 
 {% block body %}
+    {% embed 'vues/form/default_form.twig' with {'form':participantForm} %}
+        {% block h2 %} Modifier le profil ! {% endblock %}
+        {% block buttonLabel %} Modifier le profil {% endblock %}
+    {% endembed %}
+{% endblock %}
 
-{% endblock %}#}
+{% block title %}
+    update participant
+{% endblock %}
+
+
 
 
 

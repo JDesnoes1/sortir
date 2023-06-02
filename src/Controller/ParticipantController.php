@@ -4,44 +4,69 @@ namespace App\Controller;
 
 use App\Form\RegistrationFormType;
 use App\Repository\ParticipantRepository;
-use App\Form\EditUserType;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Utils\Uploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/participant', name: 'participant_')]
 class ParticipantController extends AbstractController
 {
-    #[Route('/afficher/user/{id}', name: 'app_afficher_user')]
-    public function showUser($id, ParticipantRepository $participantRepository): Response
+    #[Route('/{id}', name: 'show')]
+    public function show($id, ParticipantRepository $participantRepository): Response
     {
-        return $this->render('participant/index.html.twig', [
+        $participant = $participantRepository->findOneBy(['id' => $id]);
+        return $this->render('participant/show.html.twig', [
+            'participant' => $participant
         ]);
     }
 
 
-    #[Route('/modifier/user/{id}', name: 'app_modifier_user')]
-    public function editUser($id, Request $request, EntityManagerInterface $entityManager, ParticipantRepository $participantRepository): Response
+    #[Route('/update/{id}', name: 'update')]
+    public function update($id, Request $request,
+                           ParticipantRepository $participantRepository,
+                           Uploader $uploader,
+                           UserPasswordHasherInterface $userPasswordHasher): Response
     {
-        $user = $participantRepository->findUserById($id);
+        $participant = $participantRepository->find($id);
 
         // Créer le formulaire de modification
-        $form = $this->createForm(EditUserType::class, $user);
+        $form = $this->createForm(RegistrationFormType::class, $participant);
 
         // Gérer la soumission du formulaire
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Enregistrer les changements dans la base de données
-            $entityManager->flush();
 
-            // Rediriger vers la page d'affichage de l'utilisateur
-            return $this->redirectToRoute('sortie_list', ['id' => $user->getId()]);
+        if ($form->isSubmitted()) {
+
+            /**
+             * @var UploadedFile $file
+             */
+            $file = $form->get('photo')->getData();
+
+            if ($file) {
+                $newFileName = $uploader->save($file, $participant->getUserIdentifier(), $this->getParameter('upload_photo'));
+                $participant->setPhoto($newFileName);
+            }
+            // encode the plain password
+            $participant->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $participant,
+                    $form->get('Password')->getData()
+                )
+            );
+
+            $participantRepository->save($participant, true);
+
+                return $this->redirectToRoute('participant_show', ['id' => $participant->getId(),
+                    'participant' => $participant
+                ]);
         }
 
         return $this->render('participant/update.html.twig', [
-            'form' => $form->createView(),
-            'user' => $user,
+            'participantForm' => $form->createView()
         ]);
     }
 }

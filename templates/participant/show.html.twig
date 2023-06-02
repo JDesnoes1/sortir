@@ -11,9 +11,15 @@
         <p>Telephone : {{ participant.telephone }}</p>
         <p>Mail : {{ participant.mail }}</p>
         <p>Campus : {{ participant.campus.nom }}</p>
-        {% if(participant.id is same as app.user.id) %}
-            <button><a href="http://localhost/sortir/public/participant/update/{{ participant.id }}">Modifier</a></button>
+        {% if app.user.id is same as participant.id %}
+            <button><a href="{{ path('participant_update',{'id': participant.id}) }}">Modifier</a></button>
         {% endif %}
+            <button><a href="{{ path('sortie_list') }}">Retour</a></button>
+
+        {#<form action="{{ path('app_modifier_user', {'id': user.id}) }}" method="POST">
+            {{ form_widget(form) }}
+            <button type="submit" class="btn btn-primary">Enregistrer </button>
+        </form>#}
     </div>
 
 

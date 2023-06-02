@@ -2,5 +2,5 @@
 
 app_homepage:
   path: /
-  controller: App\Controller\SortieController::list
+  controller: App\Controller\SecurityController::login
 
