@@ -25,11 +25,11 @@
                     <li class="nav-item"><a class="nav-link" href="{{ path('campus_list') }}">Liste des campus</a></li>
                     <img class="compte" style="height: 40px; width: 40px; border-radius: 50%"
                          src="{{ asset('img/'~app.user.photo) }}" alt="{{ app.user.nom }}">
-                    <li class="nav-item"><a class="nav-link" href="{{ path('app_logout') }}">Logout
+                    <li class="nav-item"><a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter
                             ({{ app.user.userIdentifier }})</a></li>
                 {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{{ path('app_login') }}">Login</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ path('app_register') }}">Register</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('app_login') }}">Se connecter</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('app_register') }}">Enregistrer un nouveau participant</a></li>
                 {% endif %}
             </ul>
         </div>

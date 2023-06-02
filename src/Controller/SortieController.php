@@ -65,7 +65,7 @@ class SortieController extends AbstractController
         //Permet d'extraire les données du formulaire
         $sortieForm->handleRequest($request);
 
-        if($sortieForm->isSubmitted()){
+        if($sortieForm->isSubmitted() && $sortieForm->isValid()){
             $sortieRepository->save($sortie, true);
             return $this->redirectToRoute('sortie_list');
 
@@ -93,7 +93,7 @@ class SortieController extends AbstractController
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
 
-        if ($sortieForm->isSubmitted()){
+        if ($sortieForm->isSubmitted() && $sortieForm->isValid()){
             $sortieRepository->save($sortie, true);
             return $this->redirectToRoute('sortie_list');
         }
@@ -133,15 +133,15 @@ class SortieController extends AbstractController
         $username = $this->getUser()->getUserIdentifier();
         $participant = $participantRepository->findOneBy(['username' => $username]);
 
-        if($sortie->getParticipant()->getId() === $participant->getId()){
+        if($sortie->getParticipant()->getId() === $participant->getId()
+            || $sortie->getParticipants()->count()>=$sortie->getNbInscriptionsMax()
+            || $sortie->getEtat()->getLibelle() !=="Ouverte"
+            || $sortie->getDateLimiteInscription()<date('now')){
             return $this->render('sortie/show.html.twig', [
                 'sortie'=>$sortie
             ]);
         }
-        if($sortie->getParticipants()->count()>=$sortie->getNbInscriptionsMax()){
-            return $this->render('sortie/show.html.twig', [
-                'sortie'=>$sortie]);
-        }
+
         // Insérer le participant dans la table d'association
         $sortie->addParticipant($participant);
         $entityManager->flush();

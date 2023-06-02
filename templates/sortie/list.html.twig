@@ -4,8 +4,9 @@
     <br>
     <h3>Liste des sorties !</h3>
 
+    {# bootstrap tableau = class="table table-hover table-bordered" #}
     <div class="container-sorties">
-        <table class="table table-hover">
+        <table>
         <thead>
             <tr>
                 <th>Nom de la sortie</th>
@@ -35,7 +36,7 @@
                             {% if sortie.getParticipants().contains(app.user) %}
                                 <button class="btn btn-outline-primary"><a class="link_button" href="{{ path('sortie_desinscription', {'sortieId': sortie.id}) }}">Se désinscrire</a></button>
                             {% else %}
-                                {% if sortie.getParticipants.count<sortie.getNbInscriptionsMax() %}
+                                {% if sortie.getParticipants.count<sortie.getNbInscriptionsMax() and sortie.etat.libelle == 'Ouverte' %}
                                 <button class="btn btn-outline-primary"><a class="link_button" href="{{ path('sortie_inscription', {'sortieId': sortie.id}) }}">S'inscrire</a></button>
                             {% endif %}
                             {% endif %}
