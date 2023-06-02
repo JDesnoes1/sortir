@@ -1,0 +1,17 @@
+{% extends 'baseSansNav.html.twig' %}
+
+{% block title %}
+    Ajouter lieu
+{% endblock %}
+
+{% block body %}
+    <div>
+        {{ form_start(lieuForm)}}
+        {{ form_widget(lieuForm)}}
+        <button data-toggle="modal" data-target="#modalLieu">{% block buttonLabel %}Ajouter un lieu{% endblock %}</button>
+        {{ form_end(lieuForm)}}
+    </div>
+{% endblock %}
+
+
+

@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Form\LieuType;
 use App\Form\SortieType;
+use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
@@ -47,12 +50,15 @@ class SortieController extends AbstractController
         Request $request,
         SortieRepository $sortieRepository,
         ParticipantRepository $participantRepository,
-        VilleRepository $villeRepository
+        LieuRepository $lieuRepository
     ): Response {
 
         $username = $this->getUser()->getUserIdentifier();
         $participant = $participantRepository->findOneBy(['username' => $username]);
         $sortie = new Sortie();
+
+        $lieu = new Lieu();
+        $lieuForm = $this->createForm(LieuType::class, $lieu);
 
         //A faire plus tard, tips : QueryBuilder
         /*$campus = $villeRepository->findAll();*/
@@ -60,19 +66,29 @@ class SortieController extends AbstractController
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortie->setParticipant($participant);
 
-
-
         //Permet d'extraire les données du formulaire
         $sortieForm->handleRequest($request);
 
-        if($sortieForm->isSubmitted() && $sortieForm->isValid()){
-            $sortieRepository->save($sortie, true);
-            return $this->redirectToRoute('sortie_list');
+            $lieuForm->handleRequest($request);
 
-        }
+            if ($lieuForm->isSubmitted() && $lieuForm->isValid()) {
+                $lieuRepository->save($lieu, true);
+                $this->addFlash('success', 'Le lieu a été ajouté avec succès.');
+                return $this->redirectToRoute('sortie_add');
+            }
+
+
+            $sortieForm->handleRequest($request);
+
+            if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+                $sortieRepository->save($sortie, true);
+                $this->addFlash('success', 'La sortie a été ajoutée avec succès.');
+                return $this->redirectToRoute('sortie_list');
+            }
 
         return $this->render('sortie/add.html.twig', [
-            'sortieForm' => $sortieForm->createView()
+            'sortieForm' => $sortieForm->createView(),
+            'lieuForm' => $lieuForm->createView()
         ]);
 
     }
