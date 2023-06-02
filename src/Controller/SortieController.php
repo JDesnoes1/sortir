@@ -46,6 +46,7 @@ class SortieController extends AbstractController
         ]);
     }
 
+
     #[Route('/add', name: 'add')]
     public function add(
         Request $request,
@@ -53,50 +54,55 @@ class SortieController extends AbstractController
         ParticipantRepository $participantRepository,
         LieuRepository $lieuRepository
     ): Response {
-
         $username = $this->getUser()->getUserIdentifier();
         $participant = $participantRepository->findOneBy(['username' => $username]);
+
         $sortie = new Sortie();
+        $sortieForm = $this->createForm(SortieType::class, $sortie);
 
         $lieu = new Lieu();
         $lieuForm = $this->createForm(LieuType::class, $lieu);
+        $lieuForm->handleRequest($request);
 
-        //A faire plus tard, tips : QueryBuilder
-        /*$campus = $villeRepository->findAll();*/
+        if ($lieuForm->isSubmitted() && $lieuForm->isValid()) {
+            $lieuRepository->save($lieu, true);
+            $this->addFlash('success', 'Le lieu a été ajouté avec succès.');
 
-        $sortieForm = $this->createForm(SortieType::class, $sortie);
-        $sortie->setParticipant($participant);
-
-        //Permet d'extraire les données du formulaire
-        $sortieForm->handleRequest($request);
-
-            $lieuForm->handleRequest($request);
-
-            if ($lieuForm->isSubmitted() && $lieuForm->isValid()) {
-                $lieuRepository->save($lieu, true);
-                $this->addFlash('success', 'Le lieu a été ajouté avec succès.');
-                return $this->redirectToRoute('sortie_add');
-            }
-
-
-            $sortieForm->handleRequest($request);
-
-            if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
-                $sortieRepository->save($sortie, true);
-                $this->addFlash('success', 'La sortie a été ajoutée avec succès.');
-                return $this->redirectToRoute('sortie_list');
-            }
-        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
-            $sortieRepository->save($sortie, true);
-            return $this->redirectToRoute('sortie_list');
-
+            // Rediriger vers la création de sortie en passant le lieu nouvellement créé
+            return $this->redirectToRoute('sortie_add', ['lieu' => $lieu->getId()]);
         }
 
-        return $this->render('sortie/add.html.twig', [
-            'sortieForm' => $sortieForm->createView()
-        ]);
+        // Récupérer l'ID du lieu à partir de la requête
+        $lieuId = $request->query->get('lieu');
+        if ($lieuId) {
+            $lieu = $lieuRepository->find($lieuId);
+            $sortie->setLieu($lieu);
+        }
 
+        $sortieForm->handleRequest($request);
+
+        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+            $sortie->setParticipant($participant);
+            $sortieRepository->save($sortie, true);
+            $this->addFlash('success', 'La sortie a été ajoutée avec succès.');
+            // Vous pouvez rediriger vers la liste des sorties ou une autre page si nécessaire
+            return $this->redirectToRoute('sortie_list');
+        }
+
+        // Définir les données du formulaire de sortie avec les valeurs existantes
+        $sortieForm->setData($sortie);
+
+        return $this->render('sortie/add.html.twig', [
+            'sortieForm' => $sortieForm->createView(),
+            'lieuForm' => $lieuForm->createView(),
+        ]);
     }
+
+
+
+
+
+
     #[Route('/update/{id}', name: 'update', requirements: ["id" => "\d+"])]
     public function edit(int $id, SortieRepository $sortieRepository, Request $request, ParticipantRepository $participantRepository)
     {
@@ -120,7 +126,8 @@ class SortieController extends AbstractController
         }
 
         return $this->render('sortie/update.html.twig', [
-            'sortieForm' => $sortieForm->createView()
+            'sortieForm' => $sortieForm->createView(),
+            'sortie'=>$sortie
         ]);
 
     }
@@ -215,11 +222,15 @@ class SortieController extends AbstractController
                 'sortie' => $sortie
             ]);
         }
+        if($sortie->getDateHeureDebut()>date('now')){
             $sortie->setEtat($etat);
             $sortie->setInfosSortie($reason);
             $sortieRepository->save($sortie, true);
             return $this->redirectToRoute('sortie_list');
-
+        }
+        return $this->render('sortie/show.html.twig', [
+            'sortie' => $sortie
+        ]);
     }
 
 

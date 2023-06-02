@@ -11,8 +11,9 @@
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalLieu">
             Ajouter un lieu
         </button>
-        <button>{% block buttonLabel %}Ajouter une sortie{% endblock %}</button>
+        <button class="btn btn-primary">{% block buttonLabel %}Ajouter une sortie{% endblock %}</button>
         {{ form_end(sortieForm) }}
+
         <div class="modal fade" id="modalLieu" tabindex="-1" aria-labelledby="modalLieuLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -23,11 +24,13 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        {{ include('lieu/add.html.twig') }}
+                        {{ form_start(lieuForm) }}
+                        {{ form_widget(lieuForm) }}
+                        <button class="btn btn-primary">{% block lieuButtonLabel %}Ajouter un lieu{% endblock %}</button>
+                        {{ form_end(lieuForm) }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 {% endblock %}
-
