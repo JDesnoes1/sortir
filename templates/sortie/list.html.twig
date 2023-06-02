@@ -36,7 +36,9 @@
                             {% if sortie.getParticipants().contains(app.user) %}
                                 <button class="btn btn-outline-primary"><a class="link_button" href="{{ path('sortie_desinscription', {'sortieId': sortie.id}) }}">Se désinscrire</a></button>
                             {% else %}
+                                {% if sortie.getParticipants.count<sortie.getNbInscriptionsMax() %}
                                 <button class="btn btn-outline-primary"><a class="link_button" href="{{ path('sortie_inscription', {'sortieId': sortie.id}) }}">S'inscrire</a></button>
+                            {% endif %}
                             {% endif %}
                         {% endif %}
                         <div class="button-tab-container">
