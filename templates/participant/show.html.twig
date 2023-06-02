@@ -12,9 +12,9 @@
         <p>Mail : {{ participant.mail }}</p>
         <p>Campus : {{ participant.campus.nom }}</p>
         {% if app.user.id is same as participant.id %}
-            <button><a href="{{ path('participant_update',{'id': participant.id}) }}">Modifier</a></button>
+            <a href="{{ path('participant_update',{'id': participant.id}) }}" class="btn btn-outline-primary">Modifier</a>
         {% endif %}
-            <button><a href="{{ path('sortie_list') }}">Retour</a></button>
+        <a href="{{ path('sortie_list') }}" class="btn btn-outline-primary">Retour</a>
 
         {#<form action="{{ path('app_modifier_user', {'id': user.id}) }}" method="POST">
             {{ form_widget(form) }}

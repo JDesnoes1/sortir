@@ -15,12 +15,12 @@
             </div>
         {% endif %}
 
-        <h1 class="h3 mb-3 font-weight-normal">Se connecter</h1>
+        <h3 class="h3 mb-3 font-weight-normal">Se connecter</h3>
         <label for="inputUsername">Pseudo</label>
-        <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control"
-               autocomplete="username" required autofocus>
+        <input type="text" value="{{ last_username }}" name="username" id="inputUsername"
+               autocomplete="username" required autofocus><br>
         <label for="inputPassword">Mot de passe</label>
-        <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password"
+        <input type="password" name="password" id="inputPassword"  autocomplete="current-password"
                required>
 
         <input type="hidden" name="_csrf_token"
