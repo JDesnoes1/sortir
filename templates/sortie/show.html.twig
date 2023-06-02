@@ -6,65 +6,67 @@
 
 {% block body %}
 
-    <h2>Details de la sortie !</h2>
+<h2>Details de la sortie !</h2>
 
-    <section>
-        <div class="infosSortie">
-            <p>Nom de la sortie : {{ sortie.nom }}</p>
-            <p>Date et heure de la sortie : {{ sortie.dateHeureDebut | date('d-m-Y-H-i-s') }}</p>
-            <p>Date limite d'inscription : {{ sortie.duree }}</p>
-            <p>Participants : {{ sortie.participants.count }}/{{ sortie.nbInscriptionsMax }}</p>
-            <p>Descriptions : et infos {{ sortie.infosSortie }}</p>
-            <p>Campus : {{ sortie.campus.nom }}</p>
-            <p>Lieu : {{ sortie.lieu.nom }}</p>
-            <p>Rue : {{ sortie.lieu.rue }}</p>
-            <p>Ville : {{ sortie.lieu.ville.nom }}</p>
-            <p>Code postal : {{ sortie.lieu.ville.codePostal }}</p>
+<section>
+    <div class="infosSortie">
+        <p>Nom de la sortie : {{ sortie.nom }}</p>
+        <p>Date et heure de la sortie : {{ sortie.dateHeureDebut | date('d-m-Y-H-i-s') }}</p>
+        <p>Date limite d'inscription : {{ sortie.duree }}</p>
+        <p>Participants : {{ sortie.participants.count }}/{{ sortie.nbInscriptionsMax }}</p>
+        <p>Descriptions : et infos {{ sortie.infosSortie }}</p>
+        <p>Campus : {{ sortie.campus.nom }}</p>
+        <p>Lieu : {{ sortie.lieu.nom }}</p>
+        <p>Rue : {{ sortie.lieu.rue }}</p>
+        <p>Ville : {{ sortie.lieu.ville.nom }}</p>
+        <p>Code postal : {{ sortie.lieu.ville.codePostal }}</p>
 
-            {% if(sortie.participant.id is not same as(app.user.id) ) %}
-                {% if sortie.getParticipants().contains(app.user) %}
-                    <a href="{{ path('sortie_desinscription', {'sortieId': sortie.id}) }}" class="btn btn-primary">Se
-                        désinscrire</a>
-                {% else %}
-                    {% if sortie.getParticipants.count<sortie.getNbInscriptionsMax() %}
-                        <a href="{{ path('sortie_inscription', {'sortieId': sortie.id}) }}" class="btn btn-primary">S'inscrire</a>
-                    {% else %}
-                        <p class="btn btn-primary" >Les
-                            inscriptions sont complètes </p>
-                    {% endif %}
-                {% endif %}
-            {% endif %}
-            {% if(sortie.participant.id is same as(app.user.id)) %}
-                <button><a class="link_button" href="{{ path('sortie_update', {'id':sortie.id}) }}">Modifier </a>
-                </button>
-                <button><a class="link_button" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer </a>
-                </button>
-            {% endif %}
-            {% for flashMessage in app.session.flashBag.get('success') %}
-                <div class="alert alert-success">
-                    {{ flashMessage }}
-                </div>
-            {% endfor %}
-        </div>
-
-        <div class="nbParticipants">
-            <h3>Participants :</h3>
-            {% if sortie.participants is not empty %}
-                <ul>
-                    {% for participant in sortie.participants %}
-                        <li>Pseudo : {{ participant.username }} | Nom : {{ participant.nom }} | Prénom
-                            : {{ participant.prenom }}</li>
-                        {% if app.user.id is not same as participant.id %}
-                            <button><a class="link_button"
-                                       href="{{ path('participant_show', {'id': participant.id}) }}">Voir le profil</a>
-                            </button>
-                        {% endif %}
-                    {% endfor %}
-                </ul>
+        {% if(sortie.participant.id is not same as(app.user.id) ) %}
+            {% if sortie.getParticipants().contains(app.user) %}
+                <a href="{{ path('sortie_desinscription', {'sortieId': sortie.id}) }}" class="btn btn-primary">Se
+                    désinscrire</a>
             {% else %}
-                <p>Aucun participant pour le moment.</p>
+                {% if sortie.getParticipants.count<sortie.getNbInscriptionsMax() and sortie.etat.libelle == "Ouverte"%}
+                    <a href="{{ path('sortie_inscription', {'sortieId': sortie.id}) }}" class="btn btn-primary">S'inscrire</a>
+                {% elseif sortie.etat.libelle=='Clôturée' %}
+                    <p class="btn btn-primary">La sortie est clôturée </p>
+                {% else %}
+                    <p class="btn btn-primary">Les
+                        inscriptions sont complètes </p>
             {% endif %}
-        </div>
-    </section>
+        {% endif %}
+        {% endif %}
+        {% if(sortie.participant.id is same as(app.user.id)) %}
+            <button><a class="link_button" href="{{ path('sortie_update', {'id':sortie.id}) }}">Modifier </a>
+            </button>
+            <button><a class="link_button" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer </a>
+            </button>
+        {% endif %}
+        {% for flashMessage in app.session.flashBag.get('success') %}
+            <div class="alert alert-success">
+                {{ flashMessage }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="nbParticipants">
+        <h3>Participants :</h3>
+        {% if sortie.participants is not empty %}
+            <ul>
+                {% for participant in sortie.participants %}
+                    <li>Pseudo : {{ participant.username }} | Nom : {{ participant.nom }} | Prénom
+                        : {{ participant.prenom }}</li>
+                    {% if app.user.id is not same as participant.id %}
+                        <button><a class="link_button"
+                                   href="{{ path('participant_show', {'id': participant.id}) }}">Voir le profil</a>
+                        </button>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Aucun participant pour le moment.</p>
+        {% endif %}
+    </div>
+</section>
 {% endblock %}
 
