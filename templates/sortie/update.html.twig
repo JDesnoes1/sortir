@@ -5,9 +5,27 @@
         {% block h2 %} Modifier la sortie ! {% endblock %}
         {% block buttonLabel %} Modifier la sortie {% endblock %}
     {% endembed %}
+    <button onclick="confirmCancellation({{ sortie.id }})">Annuler la sortie</button>
+
+    <script>
+        function confirmCancellation(sortieId) {
+            var confirmation = confirm("Voulez-vous vraiment annuler cette sortie ?");
+            if (confirmation) {
+                var cancellationReason = prompt("Veuillez saisir le motif d'annulation :");
+                if (cancellationReason !== null) {
+                    var url = "{{ path('sortie_cancel', {'id': 0, 'reason': 'REASON_PLACEHOLDER'}) }}";
+                    url = url.replace(0, sortieId).replace('REASON_PLACEHOLDER', encodeURIComponent(cancellationReason));
+                    window.location.href = url;
+                }
+            }
+        }
+    </script>
 {% endblock %}
 
 {% block title %}
 
 {% endblock %}
 
+{% block javascripts %}
+
+{% endblock %}

@@ -7,7 +7,7 @@
     {# bootstrap tableau = class="table table-hover table-bordered" #}
     <div class="container-sorties">
         <table>
-        <thead>
+            <thead>
             <tr>
                 <th>Nom de la sortie</th>
                 <th>Date de la sortie</th>
@@ -28,24 +28,36 @@
                     <td>{{ sortie.participants.count }}/{{ sortie.nbInscriptionsMax }}</td>
                     <td>{{ sortie.etat.libelle }}</td>
                     <td>{% if sortie.getParticipants().contains(app.user) %}X{% endif %}</td>
-                    <td> <a class="link_button" href="{{ path('participant_show', {'id': sortie.participant.id}) }}">{{ sortie.participant.userIdentifier }}</a></td>
+                    <td><a class="link_button"
+                           href="{{ path('participant_show', {'id': sortie.participant.id}) }}">{{ sortie.participant.userIdentifier }}</a>
+                    </td>
 
                     <td>
                         {% if sortie.participant.id is not same as(app.user.id) %}
-                            <button class="btn btn-outline-primary"><a class="link_button" href="{{ path('sortie_details', {'id': sortie.id}) }}">Afficher</a></button>
-                            {% if sortie.getParticipants().contains(app.user) %}
-                                <button class="btn btn-outline-primary"><a class="link_button" href="{{ path('sortie_desinscription', {'sortieId': sortie.id}) }}">Se désinscrire</a></button>
+                            <button class="btn btn-outline-primary"><a class="link_button"
+                                                                       href="{{ path('sortie_details', {'id': sortie.id}) }}">Afficher</a>
+                            </button>
+                            {% if sortie.getParticipants().contains(app.user) and sortie.dateLimiteInscription>date('now') %}
+                                <button class="btn btn-outline-primary"><a class="link_button"
+                                                                           href="{{ path('sortie_desinscription', {'sortieId': sortie.id}) }}">Se
+                                        désinscrire</a></button>
                             {% else %}
-                                {% if sortie.getParticipants.count<sortie.getNbInscriptionsMax() and sortie.etat.libelle == 'Ouverte' %}
-                                <button class="btn btn-outline-primary"><a class="link_button" href="{{ path('sortie_inscription', {'sortieId': sortie.id}) }}">S'inscrire</a></button>
-                            {% endif %}
+                                {% if sortie.getParticipants.count<sortie.getNbInscriptionsMax() and sortie.dateLimiteInscription > date('now') %}
+                                    <button class="btn btn-outline-primary"><a class="link_button"
+                                                                               href="{{ path('sortie_inscription', {'sortieId': sortie.id}) }}">S'inscrire</a>
+                                    </button>
+                                {% endif %}
                             {% endif %}
                         {% endif %}
                         <div class="button-tab-container">
-                        {% if sortie.participant.id is same as(app.user.id) %}
-                            <button class="btn btn-outline-primary"><a class="link" href="{{ path('sortie_update', {'id':sortie.id}) }}">Modifier</a></button>
-                            <button class="btn btn-outline-primary"><a class="link" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a></button>
-                        {% endif %}
+                            {% if sortie.participant.id is same as(app.user.id) %}
+                                <button class="btn btn-outline-primary"><a class="link"
+                                                                           href="{{ path('sortie_update', {'id':sortie.id}) }}">Modifier</a>
+                                </button>
+                                <button class="btn btn-outline-primary"><a class="link"
+                                                                           href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a>
+                                </button>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>

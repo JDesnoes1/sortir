@@ -14,22 +14,26 @@
         <p>Date et heure de la sortie : {{ sortie.dateHeureDebut | date('d-m-Y-H-i-s') }}</p>
         <p>Date limite d'inscription : {{ sortie.duree }}</p>
         <p>Participants : {{ sortie.participants.count }}/{{ sortie.nbInscriptionsMax }}</p>
-        <p>Descriptions : et infos {{ sortie.infosSortie }}</p>
+        <p>Description : {{ sortie.infosSortie }}</p>
         <p>Campus : {{ sortie.campus.nom }}</p>
         <p>Lieu : {{ sortie.lieu.nom }}</p>
         <p>Rue : {{ sortie.lieu.rue }}</p>
         <p>Ville : {{ sortie.lieu.ville.nom }}</p>
         <p>Code postal : {{ sortie.lieu.ville.codePostal }}</p>
 
-        {% if(sortie.participant.id is not same as(app.user.id) ) %}
+        {% if(sortie.participant.id is not same as(app.user.id) and sortie.dateLimiteInscription > date('now')) %}
             {% if sortie.getParticipants().contains(app.user) %}
                 <a href="{{ path('sortie_desinscription', {'sortieId': sortie.id}) }}" class="btn btn-primary">Se
                     désinscrire</a>
             {% else %}
-                {% if sortie.getParticipants.count<sortie.getNbInscriptionsMax() and sortie.etat.libelle == "Ouverte"%}
+                {% if sortie.dateLimiteInscription > date('now') %}
+
+                {% elseif sortie.getParticipants.count<sortie.getNbInscriptionsMax() and sortie.etat.libelle == "Ouverte"%}
                     <a href="{{ path('sortie_inscription', {'sortieId': sortie.id}) }}" class="btn btn-primary">S'inscrire</a>
                 {% elseif sortie.etat.libelle=='Clôturée' %}
                     <p class="btn btn-primary">La sortie est clôturée </p>
+                {% elseif sortie.dateLimiteInscription>date('now') %}
+                    <p class="btn btn-primary">La date limite d'inscription est dépassée</p>
                 {% else %}
                     <p class="btn btn-primary">Les
                         inscriptions sont complètes </p>
@@ -54,13 +58,7 @@
         {% if sortie.participants is not empty %}
             <ul>
                 {% for participant in sortie.participants %}
-                    <li>Pseudo : {{ participant.username }} | Nom : {{ participant.nom }} | Prénom
-                        : {{ participant.prenom }}</li>
-                    {% if app.user.id is not same as participant.id %}
-                        <button><a class="link_button"
-                                   href="{{ path('participant_show', {'id': participant.id}) }}">Voir le profil</a>
-                        </button>
-                    {% endif %}
+                    <li>Pseudo : <a class="link_button" href="{{ path('participant_show', {'id': participant.id}) }}">{{ participant.username }}</a></li>
                 {% endfor %}
             </ul>
         {% else %}
