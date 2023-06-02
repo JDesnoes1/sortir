@@ -112,7 +112,7 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 10; $i++) {
             $lieu = new Lieu();
             $lieu->setVille($generator->randomElement($villes))
-                ->setNom($generator->domainName)
+                ->setNom($generator->name)
                 ->setRue($generator->streetAddress)
             ;
 
