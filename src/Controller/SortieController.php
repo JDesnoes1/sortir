@@ -138,6 +138,10 @@ class SortieController extends AbstractController
                 'sortie'=>$sortie
             ]);
         }
+        if($sortie->getParticipants()->count()>=$sortie->getNbInscriptionsMax()){
+            return $this->render('sortie/show.html.twig', [
+                'sortie'=>$sortie]);
+        }
         // Insérer le participant dans la table d'association
         $sortie->addParticipant($participant);
         $entityManager->flush();
