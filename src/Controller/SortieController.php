@@ -68,17 +68,6 @@ class SortieController extends AbstractController
         $sortie->setParticipant($participant);
 
         //Permet d'extraire les données du formulaire
-        $sortieForm->handleRequest($request);
-
-            $lieuForm->handleRequest($request);
-
-            if ($lieuForm->isSubmitted() && $lieuForm->isValid()) {
-                $lieuRepository->save($lieu, true);
-                $this->addFlash('success', 'Le lieu a été ajouté avec succès.');
-                return $this->redirectToRoute('sortie_add');
-            }
-
-
             $sortieForm->handleRequest($request);
 
             if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
@@ -86,14 +75,10 @@ class SortieController extends AbstractController
                 $this->addFlash('success', 'La sortie a été ajoutée avec succès.');
                 return $this->redirectToRoute('sortie_list');
             }
-        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
-            $sortieRepository->save($sortie, true);
-            return $this->redirectToRoute('sortie_list');
-
-        }
 
         return $this->render('sortie/add.html.twig', [
-            'sortieForm' => $sortieForm->createView()
+            'sortieForm' => $sortieForm->createView(),
+            'lieuForm' => $lieuForm->createView()
         ]);
 
     }
