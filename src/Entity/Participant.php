@@ -37,7 +37,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-    #[Assert\NotBlank(message: "Le pseudo ne peut pas être null")]
+    #[Assert\NotBlank(message: "Le mot de passe ne peut pas être null")]
     #[Assert\Length(
         min: 6,
         max: 255,
@@ -47,7 +47,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[Assert\NotBlank(message: "Le pseudo ne peut pas être null")]
+    #[Assert\NotBlank(message: "Le nom ne peut pas être null")]
     #[Assert\Length(
         min: 2,
         max: 100,
@@ -57,7 +57,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
 
-    #[Assert\NotBlank(message: "Le pseudo ne peut pas être null")]
+    #[Assert\NotBlank(message: "Le prénom ne peut pas être null")]
     #[Assert\Length(
         min: 2,
         max: 100,
@@ -69,7 +69,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 10)]
     private ?string $telephone = null;
 
-    #[Assert\NotBlank(message: "Le pseudo ne peut pas être null")]
+    #[Assert\NotBlank(message: "Le mail ne peut pas être null")]
     #[Assert\Email()]
     #[Assert\Length(
         min: 4,
