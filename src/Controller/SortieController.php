@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Route('/sortie', name: 'sortie_')]
 class SortieController extends AbstractController
@@ -26,35 +27,33 @@ class SortieController extends AbstractController
     #[Route('/', name: 'list')]
     public function list(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, CampusRepository $campusRepository): Response
     {
-        $sorties = $sortieRepository->findAll();
+
+        $participantId= $this->getUser()->getId();
+
         $campusList = $campusRepository->findAll();
         $organisateur = $request->query->get('organisateur');
         $inscrit = $request->query->get('inscrit');
         $nonInscrit = $request->query->get('nonInscrit');
         $passees = $request->query->get('passees');
+        $campus= $request->query->get('campus');
+
         $etat = $etatRepository->findOneBy(['libelle' => 'Passée']);
 
         $searchQuery = $request->query->get('q');
+        $dateDebut = $request->query->get('dateDebut');
+        $dateFin = $request->query->get('dateFin');
 
-        if ($searchQuery) {
-            // Effectuez la recherche en utilisant le repository
-            $sorties = $sortieRepository->searchSorties($searchQuery);
-            return $this->render('sortie/list.html.twig', [
-                'sorties' => $sorties,
-                'campusList'=>$campusList,
-            ]);
-        }
+        // Effectuez la recherche en utilisant le repository
+        $sorties = $sortieRepository->searchSorties($searchQuery,$campus, $dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $passees, $participantId);
 
         foreach ($sorties as $sortie) {
-
-            $dateDebut = $sortie->getDateHeureDebut();
+            $dateDebutSortie = $sortie->getDateHeureDebut();
 
             // Obtenir la date actuelle
             $maintenant = new \DateTime();
 
             // Calculer la différence en jours entre la date de début et la date actuelle
-            // avec la méthode diff de DateTime
-            $diffJours = $maintenant->diff($dateDebut)->days;
+            $diffJours = $maintenant->diff($dateDebutSortie)->days;
 
             if ($diffJours > 30) {
                 $sortie->setEtat($etat);
@@ -63,8 +62,10 @@ class SortieController extends AbstractController
 
         return $this->render('sortie/list.html.twig', [
             'sorties' => $sorties,
-            'campusList'=>$campusList,
+            'campusList' => $campusList,
             'searchQuery' => $searchQuery,
+            'dateDebut' => $dateDebut,
+            'dateFin' => $dateFin,
             'organisateur' => $organisateur,
             'inscrit' => $inscrit,
             'nonInscrit' => $nonInscrit,

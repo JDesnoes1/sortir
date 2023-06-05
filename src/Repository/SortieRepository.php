@@ -39,21 +39,67 @@ class SortieRepository extends ServiceEntityRepository
         }
     }
 
-    public function searchSorties($searchQuery)
+    public function searchSorties($searchQuery, $campus,$dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $passees, $participantId, )
     {
         $entityManager = $this->getEntityManager();
 
         $queryBuilder = $entityManager->createQueryBuilder();
         $queryBuilder->select('s')
             ->from(Sortie::class, 's')
-            ->where('s.nom LIKE :searchQuery')
-            ->setParameter('searchQuery', '%' . $searchQuery . '%');
+            ->leftJoin('s.participant', 'o')
+            ->leftJoin('s.participants', 'i');
+
+        if ($searchQuery) {
+            $queryBuilder->where('s.nom LIKE :searchQuery')
+                ->setParameter('searchQuery', '%' . $searchQuery . '%');
+        }
+
+        if ($campus) {
+            $queryBuilder->andWhere('s.campus = :campus')
+                ->setParameter('campus', $campus);
+        }
+
+        if ($dateDebut) {
+            $queryBuilder->andWhere('s.dateHeureDebut >= :dateDebut')
+                ->setParameter('dateDebut', $dateDebut);
+        }
+
+        if ($dateFin) {
+            $queryBuilder->andWhere('s.dateHeureDebut <= :dateFin')
+                ->setParameter('dateFin', $dateFin);
+        }
+        if ($organisateur) {
+            $queryBuilder->andWhere('o.id = :organisateurId')
+                ->setParameter('organisateurId', $participantId);
+        }
+
+
+        if ($inscrit) {
+            $queryBuilder->andWhere('i.id = :participantId')
+                ->setParameter('participantId', $participantId);
+        }
+        if ($nonInscrit) {
+            $queryBuilder->andWhere(':participantId NOT MEMBER OF s.participants')
+                ->setParameter('participantId', $participantId);
+        }
+
+
+        if ($passees) {
+            $queryBuilder->andWhere('s.dateHeureDebut <= :maintenant')
+                ->setParameter('maintenant', new \DateTime());
+        }
 
         $query = $queryBuilder->getQuery();
         $sorties = $query->getResult();
 
         return $sorties;
     }
+
+
+
+
+
+
 
 
 //    /**
