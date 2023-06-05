@@ -32,12 +32,11 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $username = null;
 
     #[ORM\Column]
-    private array $roles = [];
+    private array $roles = ['ROLE_USER'];
 
     /**
      * @var string The hashed password
      */
-    #[Assert\NotBlank(message: "Le mot de passe ne peut pas être null")]
     #[Assert\Length(
         min: 6,
         max: 255,

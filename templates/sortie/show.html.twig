@@ -12,7 +12,8 @@
         <div class="infosSortie">
             <p>Nom de la sortie : {{ sortie.nom }}</p>
             <p>Date et heure de la sortie : {{ sortie.dateHeureDebut | date('d-m-Y-H-i-s') }}</p>
-            <p>Date limite d'inscription : {{ sortie.duree }}</p>
+            <p>Date limite d'inscription : {{ sortie.dateLimiteInscription }}</p>
+            <p>Durée : {{ sortie.duree }} min</p>
             <p>Participants : {{ sortie.participants.count }}/{{ sortie.nbInscriptionsMax }}</p>
             <p>Description : {{ sortie.infosSortie }}</p>
             <p>Campus : {{ sortie.campus.nom }}</p>
