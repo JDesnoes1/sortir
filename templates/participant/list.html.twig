@@ -31,16 +31,32 @@
                     <td>{{ participant.telephone }}</td>
                     <td>{% if participant.actif == 1 %}✔{% else %}❌{% endif %}</td>
                     <td>{{ participant.campus.nom }}</td>
-                    <td><button><a class="link_button" href="{{ path('participant_update', {'id': participant.id}) }}">Modifier</a></button></td>
-                    <td>{% if participant.actif == 1 %}
-                    {% endif %}
+                    <td>
+                        <button>
+                            <a class="link_button" href="{{ path('participant_toggle_active', {'id': participant.id}) }}">
+                                {% if participant.actif == 1 %}
+                                    Passer en non actif
+                                {% else %}
+                                    Passer en actif
+                                {% endif %}
+                            </a>
+                        </button>
                     </td>
-                    <td><button>Supprimer</button></td>
+                    <td>
+                        <button onclick="confirmDelete('{{ path('participant_delete', {'id': participant.id}) }}')">Supprimer</button>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
+    <script>
+        function confirmDelete(deleteUrl) {
+            if (confirm(`Êtes-vous sûr de vouloir supprimer l'utilisateur ?`)) {
+                window.location.href = deleteUrl;
+            }
+        }
+    </script>
 {% endblock %}
 
 
