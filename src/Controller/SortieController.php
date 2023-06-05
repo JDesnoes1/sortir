@@ -7,6 +7,7 @@ use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Form\LieuType;
 use App\Form\SortieType;
+use App\Repository\CampusRepository;
 use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
@@ -18,30 +19,70 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+
 #[Route('/sortie', name: 'sortie_')]
 class SortieController extends AbstractController
 {
     #[Route('/', name: 'list')]
-    public function list(SortieRepository $sortieRepository): Response
+    public function list(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, CampusRepository $campusRepository): Response
     {
         $sorties = $sortieRepository->findAll();
+        $campusList = $campusRepository->findAll();
+        $organisateur = $request->query->get('organisateur');
+        $inscrit = $request->query->get('inscrit');
+        $nonInscrit = $request->query->get('nonInscrit');
+        $passees = $request->query->get('passees');
+        $etat = $etatRepository->findOneBy(['libelle' => 'Passée']);
+
+        $searchQuery = $request->query->get('q');
+
+        if ($searchQuery) {
+            // Effectuez la recherche en utilisant le repository
+            $sorties = $sortieRepository->searchSorties($searchQuery);
+            return $this->render('sortie/list.html.twig', [
+                'sorties' => $sorties,
+                'campusList'=>$campusList,
+            ]);
+        }
+
+        foreach ($sorties as $sortie) {
+
+            $dateDebut = $sortie->getDateHeureDebut();
+
+            // Obtenir la date actuelle
+            $maintenant = new \DateTime();
+
+            // Calculer la différence en jours entre la date de début et la date actuelle
+            // avec la méthode diff de DateTime
+            $diffJours = $maintenant->diff($dateDebut)->days;
+
+            if ($diffJours > 30) {
+                $sortie->setEtat($etat);
+            }
+        }
 
         return $this->render('sortie/list.html.twig', [
             'sorties' => $sorties,
+            'campusList'=>$campusList,
+            'searchQuery' => $searchQuery,
+            'organisateur' => $organisateur,
+            'inscrit' => $inscrit,
+            'nonInscrit' => $nonInscrit,
+            'passees' => $passees,
         ]);
     }
 
 
-    #[Route('/{id}', name : 'details', requirements: ["id"=>"\d+"])]
+    #[Route('/{id}', name: 'details', requirements: ["id" => "\d+"])]
     public function show(SortieRepository $sortieRepository, int $id, ParticipantRepository $participantRepository): Response
     {
-        $sortie= $sortieRepository->find($id);
+        $sortie = $sortieRepository->find($id);
+        if (!$sortie) throw $this->createNotFoundException("Oups cette sortie n'existe pas !");
+
         $participants = $sortie->getParticipants();
 
-        if(!$sortie) throw $this->createNotFoundException("Oups cette sortie n'existe pas !");
-
         return $this->render('sortie/show.html.twig', [
-            'sortie'=>$sortie,
+            'sortie' => $sortie,
             'participants' => $participants
         ]);
     }
@@ -49,11 +90,12 @@ class SortieController extends AbstractController
 
     #[Route('/add', name: 'add')]
     public function add(
-        Request $request,
-        SortieRepository $sortieRepository,
+        Request               $request,
+        SortieRepository      $sortieRepository,
         ParticipantRepository $participantRepository,
-        LieuRepository $lieuRepository
-    ): Response {
+        LieuRepository        $lieuRepository
+    ): Response
+    {
         $username = $this->getUser()->getUserIdentifier();
         $participant = $participantRepository->findOneBy(['username' => $username]);
 
@@ -99,10 +141,6 @@ class SortieController extends AbstractController
     }
 
 
-
-
-
-
     #[Route('/update/{id}', name: 'update', requirements: ["id" => "\d+"])]
     public function edit(int $id, SortieRepository $sortieRepository, Request $request, ParticipantRepository $participantRepository)
     {
@@ -111,23 +149,23 @@ class SortieController extends AbstractController
         $username = $this->getUser()->getUserIdentifier();
         $participant = $participantRepository->findOneBy(['username' => $username]);
 
-        if($sortie->getParticipant()->getId() !== $participant->getId()){
+        if ($sortie->getParticipant()->getId() !== $participant->getId()) {
             return $this->render('sortie/show.html.twig', [
-                'sortie'=>$sortie
+                'sortie' => $sortie
             ]);
         }
 
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
 
-        if ($sortieForm->isSubmitted() && $sortieForm->isValid()){
+        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
             $sortieRepository->save($sortie, true);
             return $this->redirectToRoute('sortie_list');
         }
 
         return $this->render('sortie/update.html.twig', [
             'sortieForm' => $sortieForm->createView(),
-            'sortie'=>$sortie
+            'sortie' => $sortie
         ]);
 
     }
@@ -140,9 +178,9 @@ class SortieController extends AbstractController
         $username = $this->getUser()->getUserIdentifier();
         $participant = $participantRepository->findOneBy(['username' => $username]);
 
-        if($sortie->getParticipant()->getId() !== $participant->getId()){
+        if ($sortie->getParticipant()->getId() !== $participant->getId()) {
             return $this->render('sortie/show.html.twig', [
-                'sortie'=>$sortie
+                'sortie' => $sortie
             ]);
         }
         //Suppression de la série
@@ -162,12 +200,12 @@ class SortieController extends AbstractController
         $username = $this->getUser()->getUserIdentifier();
         $participant = $participantRepository->findOneBy(['username' => $username]);
 
-        if($sortie->getParticipant()->getId() === $participant->getId()
-            || $sortie->getParticipants()->count()>=$sortie->getNbInscriptionsMax()
-            || $sortie->getEtat()->getLibelle() !=="Ouverte"
-            || $sortie->getDateLimiteInscription()<date('now')){
+        if ($sortie->getParticipant()->getId() === $participant->getId()
+            || $sortie->getParticipants()->count() >= $sortie->getNbInscriptionsMax()
+            || $sortie->getEtat()->getLibelle() !== "Ouverte"
+            || $sortie->getDateLimiteInscription() < date('now')) {
             return $this->render('sortie/show.html.twig', [
-                'sortie'=>$sortie
+                'sortie' => $sortie
             ]);
         }
 
@@ -210,10 +248,10 @@ class SortieController extends AbstractController
     }
 
     #[Route('/cancel/{id}/{reason}', name: 'cancel', requirements: ["id" => "\d+"])]
-    public function cancel(int $id, string $reason,SortieRepository $sortieRepository,EtatRepository $etatRepository, ParticipantRepository $participantRepository)
+    public function cancel(int $id, string $reason, SortieRepository $sortieRepository, EtatRepository $etatRepository, ParticipantRepository $participantRepository)
     {
         $sortie = $sortieRepository->find($id);
-        $etat=$etatRepository->findOneBy(['libelle'=>'Annulée']);
+        $etat = $etatRepository->findOneBy(['libelle' => 'Annulée']);
         $username = $this->getUser()->getUserIdentifier();
         $participant = $participantRepository->findOneBy(['username' => $username]);
 
@@ -222,7 +260,7 @@ class SortieController extends AbstractController
                 'sortie' => $sortie
             ]);
         }
-        if($sortie->getDateHeureDebut()>date('now')){
+        if ($sortie->getDateHeureDebut() > date('now')) {
             $sortie->setEtat($etat);
             $sortie->setInfosSortie($reason);
             $sortieRepository->save($sortie, true);
@@ -232,7 +270,6 @@ class SortieController extends AbstractController
             'sortie' => $sortie
         ]);
     }
-
 
 
 }

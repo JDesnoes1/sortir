@@ -39,6 +39,23 @@ class SortieRepository extends ServiceEntityRepository
         }
     }
 
+    public function searchSorties($searchQuery)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $queryBuilder = $entityManager->createQueryBuilder();
+        $queryBuilder->select('s')
+            ->from(Sortie::class, 's')
+            ->where('s.nom LIKE :searchQuery')
+            ->setParameter('searchQuery', '%' . $searchQuery . '%');
+
+        $query = $queryBuilder->getQuery();
+        $sorties = $query->getResult();
+
+        return $sorties;
+    }
+
+
 //    /**
 //     * @return Sortie[] Returns an array of Sortie objects
 //     */

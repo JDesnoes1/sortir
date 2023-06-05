@@ -3,7 +3,44 @@
 {% block body %}
     <br>
     <h3>Liste des sorties !</h3>
+    <h5>Date du jour: {{ date('now')| date('d/m/y') }}</h5>
+    <h5>Participant: {{ app.user.nom}} </h5>
 
+    <h6>Filtrer les sorties</h6>
+
+    <select name="campus">
+        {% for campus in campusList %}
+            <option value="{{ campus.id }}">{{ campus.nom }}</option>
+        {% endfor %}
+    </select>
+
+        <h6>Le nom de la sortie contient :</h6>
+        <input type="text" name="q" value="{{ searchQuery ?? '' }}" placeholder="Rechercher une sortie">
+
+        <label for="dateDebut">Date de début :</label>
+        <input type="date" id="dateDebut" name="dateDebut" value="{{ dateDebut ?? '' }}">
+
+        <label for="dateFin">Date de fin :</label>
+        <input type="date" id="dateFin" name="dateFin" value="{{ dateFin ?? '' }}">
+
+        <label for="organisateur">Sorties dont je suis l'organisateur/trice :</label>
+        <input type="checkbox" id="organisateur" name="organisateur" {% if organisateur %}checked{% endif %}>
+
+        <label for="inscrit">Sorties auxquelles je suis inscrit/e :</label>
+        <input type="checkbox" id="inscrit" name="inscrit" {% if inscrit %}checked{% endif %}>
+
+        <label for="nonInscrit">Sorties auxquelles je ne suis pas inscrit/e :</label>
+        <input type="checkbox" id="nonInscrit" name="nonInscrit" {% if nonInscrit %}checked{% endif %}>
+
+        <label for="passees">Sorties passées :</label>
+        <input type="checkbox" id="passees" name="passees" {% if passees %}checked{% endif %}>
+
+        <button type="submit">Rechercher</button>
+    </form>
+
+
+
+    {% if sorties is not empty %}
     {# bootstrap tableau = class="table table-hover table-bordered" #}
     <div class="container-sorties">
         <table>
@@ -11,7 +48,8 @@
             <tr>
                 <th>Nom de la sortie</th>
                 <th>Date de la sortie</th>
-                <th>Clôture</th>
+                <th>date limite d'inscription</th>
+                <th>Durée de la sortie</th>
                 <th>Inscrits/places</th>
                 <th>Etat</th>
                 <th>Inscrit</th>
@@ -20,10 +58,13 @@
             </tr>
             </thead>
             <tbody>
+
+
             {% for sortie in sorties %}
                 <tr>
                     <td><a href="{{ path('sortie_details', {'id': sortie.id}) }}">{{ sortie.nom }}</a></td>
                     <td>{{ sortie.dateHeureDebut | date('d/m/y H:i') }}</td>
+                    <td>{{ sortie.dateLimiteInscription | date('d/m/y') }}</td>
                     <td>{{ sortie.duree }}</td>
                     <td>{{ sortie.participants.count }}/{{ sortie.nbInscriptionsMax }}</td>
                     <td>{{ sortie.etat.libelle }}</td>
@@ -53,6 +94,9 @@
             </tbody>
         </table>
     </div>
+    {% else %}
+        <p>Aucune sorties trouvées. N'hésite pas à en créé une !</p>
+    {% endif %}
 
     {% for flashMessage in app.session.flashBag.get('success') %}
         <div class="alert alert-success">
