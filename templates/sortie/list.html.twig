@@ -49,7 +49,6 @@
                 <th>Nom de la sortie</th>
                 <th>Date de la sortie</th>
                 <th>date limite d'inscription</th>
-                <th>Durée de la sortie</th>
                 <th>Inscrits/places</th>
                 <th>Etat</th>
                 <th>Inscrit</th>
@@ -65,7 +64,6 @@
                     <td><a href="{{ path('sortie_details', {'id': sortie.id}) }}">{{ sortie.nom }}</a></td>
                     <td>{{ sortie.dateHeureDebut | date('d/m/y H:i') }}</td>
                     <td>{{ sortie.dateLimiteInscription | date('d/m/y') }}</td>
-                    <td>{{ sortie.duree }}</td>
                     <td>{{ sortie.participants.count }}/{{ sortie.nbInscriptionsMax }}</td>
                     <td>{{ sortie.etat.libelle }}</td>
                     <td>{% if sortie.getParticipants().contains(app.user) %}X{% endif %}</td>
