@@ -37,7 +37,10 @@ class SortieController extends AbstractController
         $passees = $request->query->get('passees');
         $campus= $request->query->get('campus');
 
-        $etat = $etatRepository->findOneBy(['libelle' => 'Passée']);
+        $etatPassee = $etatRepository->findOneBy(['libelle' => 'Passée']);
+        $etatCloturee = $etatRepository->findOneBy(['libelle' => 'Clôturée']);
+        $etatEnCours = $etatRepository->findOneBy(['libelle' => 'Activité en cours']);
+        $etatHistorisee = $etatRepository->findOneBy(['libelle'=>'Historisée']);
 
         $searchQuery = $request->query->get('q');
         $dateDebut = $request->query->get('dateDebut');
@@ -45,20 +48,27 @@ class SortieController extends AbstractController
 
         // Effectuez la recherche en utilisant le repository
         $sorties = $sortieRepository->searchSorties($searchQuery,$campus, $dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $passees, $participantId);
-
         foreach ($sorties as $sortie) {
             $dateDebutSortie = $sortie->getDateHeureDebut();
-
-            // Obtenir la date actuelle
+            $dateFinInscription = $sortie->getDateLimiteInscription();
+            $dateFinActivite = clone $dateDebutSortie;
+            $dateFinActivite->modify('+' . $sortie->getDuree() . ' minutes');
             $maintenant = new \DateTime();
 
-            // Calculer la différence en jours entre la date de début et la date actuelle
-            $diffJours = $maintenant->diff($dateDebutSortie)->days;
+            $diffJours = $dateDebutSortie->diff($maintenant)->days;
 
-            if ($diffJours > 30) {
-                $sortie->setEtat($etat);
+            if ($maintenant >= $dateDebutSortie && $maintenant <= $dateFinActivite) {
+                $sortie->setEtat($etatEnCours);
+            } elseif ($maintenant >= $dateFinInscription && $diffJours < 30 && $maintenant<$dateDebutSortie){
+                $sortie->setEtat($etatCloturee);
+            }elseif ($maintenant >= $dateDebutSortie && $diffJours < 30) {
+                $sortie->setEtat($etatPassee);
+            } elseif ($diffJours > 30) {
+                $sortie->setEtat($etatHistorisee);
             }
         }
+
+
 
         return $this->render('sortie/list.html.twig', [
             'sorties' => $sorties,
