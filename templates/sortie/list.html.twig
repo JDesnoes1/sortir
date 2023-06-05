@@ -6,16 +6,20 @@
     <h5>Date du jour: {{ date('now')| date('d/m/y') }}</h5>
     <h5>Participant: {{ app.user.nom}} </h5>
 
-    <h6>Filtrer les sorties</h6>
+    <form action="{{ path('sortie_list') }}" method="GET">
+        <h6>Filtrer les sorties</h6>
 
-    <select name="campus">
-        {% for campus in campusList %}
-            <option value="{{ campus.id }}">{{ campus.nom }}</option>
-        {% endfor %}
-    </select>
+        <label for="campus">Campus: </label>
+            <select name="campus" id="campus">
+                {% for campus in campusList %}
+                    <option value="{{ campus.id }}">{{ campus.nom }}</option>
+                {% endfor %}
+            </select>
 
-        <h6>Le nom de la sortie contient :</h6>
-        <input type="text" name="q" value="{{ searchQuery ?? '' }}" placeholder="Rechercher une sortie">
+
+        <label for="recherche">Le nom de la sortie contient : </label>
+        <input type="text" name="q" id="recherche" value="{{ searchQuery ?? '' }}" placeholder="Rechercher une sortie">
+
 
         <label for="dateDebut">Date de début :</label>
         <input type="date" id="dateDebut" name="dateDebut" value="{{ dateDebut ?? '' }}">
@@ -37,7 +41,6 @@
 
         <button type="submit">Rechercher</button>
     </form>
-
 
 
     {% if sorties is not empty %}

@@ -69,4 +69,6 @@ class ParticipantController extends AbstractController
             'participantForm' => $form->createView()
         ]);
     }
+
+
 }
