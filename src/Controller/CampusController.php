@@ -24,7 +24,6 @@ class CampusController extends AbstractController
             'campus' => $campus
         ]);
     }
-
     #[Route('/add', name: 'add')]
     public function add(
         Request $request,

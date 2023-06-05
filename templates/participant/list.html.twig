@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Users list
+{% endblock %}
+
+{% block body %}
+    <div class="container-sorties">
+        <table>
+            <thead>
+            <tr>
+                <th>Pseudo</th>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Actif</th>
+                <th>Campus</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+
+
+            {% for participant in participants %}
+                <tr>
+                    <td>{{ participant.userIdentifier }}</td>
+                    <td>{{ participant.prenom }}</td>
+                    <td>{{ participant.nom }}</td>
+                    <td>{{ participant.mail }}</td>
+                    <td>{{ participant.telephone }}</td>
+                    <td>{% if participant.actif == 1 %}✔{% else %}❌{% endif %}</td>
+                    <td>{{ participant.campus.nom }}</td>
+                    <td><button><a class="link_button" href="{{ path('participant_update', {'id': participant.id}) }}">Modifier</a></button></td>
+                    <td>{% if participant.actif == 1 %}
+                    {% endif %}
+                    </td>
+                    <td><button>Supprimer</button></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+
+
