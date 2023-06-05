@@ -29,7 +29,6 @@ class SortieController extends AbstractController
     {
 
         $participantId= $this->getUser()->getId();
-
         $campusList = $campusRepository->findAll();
         $organisateur = $request->query->get('organisateur');
         $inscrit = $request->query->get('inscrit');
@@ -41,6 +40,7 @@ class SortieController extends AbstractController
         $etatCloturee = $etatRepository->findOneBy(['libelle' => 'Clôturée']);
         $etatEnCours = $etatRepository->findOneBy(['libelle' => 'Activité en cours']);
         $etatHistorisee = $etatRepository->findOneBy(['libelle'=>'Historisée']);
+        $etatOuvert = $etatRepository->findOneBy(['libelle'=>'Ouverte']);
 
         $searchQuery = $request->query->get('q');
         $dateDebut = $request->query->get('dateDebut');
@@ -59,18 +59,24 @@ class SortieController extends AbstractController
 
             if ($maintenant >= $dateDebutSortie && $maintenant <= $dateFinActivite) {
                 $sortie->setEtat($etatEnCours);
-            } elseif ($maintenant >= $dateFinInscription && $diffJours < 30 && $maintenant<$dateDebutSortie){
+            } elseif (($maintenant >= $dateFinInscription && $diffJours < 30 && $maintenant < $dateDebutSortie)
+                || $sortie->getParticipants()->count() == $sortie->getNbInscriptionsMax() && $maintenant < $dateDebutSortie) {
                 $sortie->setEtat($etatCloturee);
             }elseif ($maintenant >= $dateDebutSortie && $diffJours < 30) {
                 $sortie->setEtat($etatPassee);
             } elseif ($diffJours > 30) {
                 $sortie->setEtat($etatHistorisee);
+            }else {
+                // Aucune condition n'est respectée, donc supprimer l'état "ouvert"
+                $sortie->setEtat($etatOuvert);
             }
+            $sortieRepository->save($sortie,true);
         }
 
 
 
         return $this->render('sortie/list.html.twig', [
+            'campusChoix'=>$campus,
             'sorties' => $sorties,
             'campusList' => $campusList,
             'searchQuery' => $searchQuery,
@@ -122,7 +128,12 @@ class SortieController extends AbstractController
             $this->addFlash('success', 'Le lieu a été ajouté avec succès.');
 
             // Rediriger vers la création de sortie en passant le lieu nouvellement créé
-            return $this->redirectToRoute('sortie_add', ['lieu' => $lieu->getId()]);
+            return $this->redirectToRoute('sortie_add', [
+                'lieu' => $lieu->getId(),
+
+
+
+                ]);
         }
 
         // Récupérer l'ID du lieu à partir de la requête

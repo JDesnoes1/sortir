@@ -9,12 +9,17 @@
     <form action="{{ path('sortie_list') }}" method="GET">
         <h6>Filtrer les sorties</h6>
 
-        <label for="campus">Campus: </label>
-            <select name="campus" id="campus">
-                {% for campus in campusList %}
+        <label for="campus">Campus:</label>
+        <select name="campus" id="campus">
+            {% for campus in campusList %}
+                {% if campus.id == campusChoix %}
+                    <option value="{{ campus.id }}" selected>{{ campus.nom }}</option>
+                {% else %}
                     <option value="{{ campus.id }}">{{ campus.nom }}</option>
-                {% endfor %}
-            </select>
+                {% endif %}
+            {% endfor %}
+        </select>
+
 
 
         <label for="recherche">Le nom de la sortie contient : </label>
@@ -63,6 +68,7 @@
 
 
             {% for sortie in sorties %}
+                {% if sortie.etat.libelle is not same as 'Historisée' and sortie.etat.libelle is not same as 'Créée' %}
                 <tr>
                     <td><a href="{{ path('sortie_details', {'id': sortie.id}) }}">{{ sortie.nom }}</a></td>
                     <td>{{ sortie.dateHeureDebut | date('d/m/y H:i') }}</td>
@@ -91,6 +97,7 @@
                         </div>
                     </td>
                 </tr>
+                {% endif %}
             {% endfor %}
             </tbody>
         </table>
