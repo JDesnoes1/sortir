@@ -61,20 +61,19 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
         return $this->findOneBy(['id' => $id]);
     }
 
-//    /**
-//     * @return Participant[] Returns an array of Participant objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+    * @return Participant[] Returns an array of Participant objects
+    */
+    public function findByUsernameOrEmail($usernameOrEmail): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.username = :usernameOrEmail')
+            ->orWhere('p.mail = :usernameOrEmail')
+            ->andWhere('p.actif = 1')
+            ->setParameter('usernameOrEmail', $usernameOrEmail)
+            ->getQuery()
+            ->getResult();
+    }
 
 //    public function findOneBySomeField($value): ?Participant
 //    {
