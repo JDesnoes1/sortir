@@ -3,20 +3,31 @@
 {% block body %}
 
     <h2>Liste des campus</h2>
+    <form action="{{ path('campus_list') }}" method="GET">
+        <label for="recherche">Le nom du campus contient : </label>
+        <input type="text" name="q" id="recherche" value="{{ searchQuery ?? '' }}" placeholder="Rechercher un campus">
+        <button type="submit">Rechercher</button>
+    </form>
 
     <ul>
         {% for campus in campus %}
             <br>
             <li>Campus: {{ campus.nom }}</li>
-            <a href="{{ path('campus_update', {'id':campus.id}) }}">Modifier</a> | <a href="{{ path('campus_delete', {'id': campus.id}) }}">Supprimer</a>
+            <a href="{{ path('campus_update', {'id':campus.id}) }}">Modifier</a> | <a
+                href="{{ path('campus_delete', {'id': campus.id}) }}">Supprimer</a>
             <br>
         {% endfor %}
     </ul>
 
-    <a href="{{ path('campus_add') }}">Ajouter un campus</a>
+
+    {{ form_start(campusForm, {'action': path('campus_add')}) }}
+    {{ form_widget(campusForm) }}
+    <button type="submit">Ajouter</button>
+    {{ form_end(campusForm) }}
+
 {% endblock %}
 
-{% block title %}
+    {% block title %}
 
-{% endblock %}
+    {% endblock %}
 
