@@ -1,6 +1,5 @@
 <nav>
     <ul class="nav-perso">
-        <div class="menu1">
             <li class="sortir">
                 {% if (app.user) %}
                     <a class="txt-blanc" href="{{ path('sortie_list') }}"><strong>SortirENI</strong></a>
@@ -8,11 +7,14 @@
                     <a><strong>SortirENI</strong></a>
                 {% endif %}
             </li>
-        </div>
-
-        <div class="menu2">
         {% if (app.user) %}
-            <li class="nav-item"><a class="txt-blanc" href="{{ path('participant_show', {'id': app.user.id}) }}">Mon Profil</a></li>
+            <li class="nav-item dropdown">
+                <a class="txt-blanc dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mon profil</a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ path('participant_show', {'id': app.user.id}) }}">Voir mon profil</a></li>
+                    <li><a href="{{ path('participant_sorties', {'id': app.user.id}) }}">Mes Sorties</a></li>
+                </ul>
+            </li>
             <li class="nav-item"><a class="txt-blanc" href="{{ path('sortie_add') }}">Ajouter une sortie</a></li>
             {% if is_granted('ROLE_ADMIN') %}
                 <li class="nav-item dropdown">
@@ -36,9 +38,6 @@
                         <li><a href="{{ path('campus_list') }}">Liste des campus</a></li>
                     </ul>
                 </li>
-        </div>
-
-        <div class="menu3">
                 {% endif %}
                 <li class="imgProril">
                     {% if app.user.photo %}
@@ -53,6 +52,5 @@
                     <a class="txt-blanc" href="{{ path('app_login') }}">Se connecter</a>
                 </li>
             {% endif %}
-        </div>
     </ul>
 </nav>
