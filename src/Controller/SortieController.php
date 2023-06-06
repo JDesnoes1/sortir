@@ -28,13 +28,13 @@ class SortieController extends AbstractController
     public function list(Request $request, SortieRepository $sortieRepository, EtatRepository $etatRepository, CampusRepository $campusRepository): Response
     {
 
-        $participantId= $this->getUser()->getId();
+        $participantId = $this->getUser()->getId();
         $campusList = $campusRepository->findAll();
         $organisateur = $request->query->get('organisateur');
         $inscrit = $request->query->get('inscrit');
         $nonInscrit = $request->query->get('nonInscrit');
         $passees = $request->query->get('passees');
-        $campus= $request->query->get('campus');
+        $campus = $request->query->get('campus');
 
         $searchQuery = $request->query->get('q');
         $dateDebut = $request->query->get('dateDebut');
@@ -43,12 +43,13 @@ class SortieController extends AbstractController
         $etatPassee = $etatRepository->findOneBy(['libelle' => 'Passée']);
         $etatCloturee = $etatRepository->findOneBy(['libelle' => 'Clôturée']);
         $etatEnCours = $etatRepository->findOneBy(['libelle' => 'Activité en cours']);
-        $etatHistorisee = $etatRepository->findOneBy(['libelle'=>'Historisée']);
-        $etatOuvert = $etatRepository->findOneBy(['libelle'=>'Ouverte']);
-        $etatAnnulee = $etatRepository->findOneBy(['libelle'=>'Annulée']);
+        $etatHistorisee = $etatRepository->findOneBy(['libelle' => 'Historisée']);
+        $etatOuvert = $etatRepository->findOneBy(['libelle' => 'Ouverte']);
+        $etatAnnulee = $etatRepository->findOneBy(['libelle' => 'Annulée']);
+        $etatCreee = $etatRepository->findOneBy(['libelle' => 'Créée']);
 
         // Effectuez la recherche en utilisant le repository
-        $sorties = $sortieRepository->searchSorties($searchQuery,$campus, $dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $passees, $participantId);
+        $sorties = $sortieRepository->searchSorties($searchQuery, $campus, $dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $passees, $participantId);
         foreach ($sorties as $sortie) {
             $dateDebutSortie = $sortie->getDateHeureDebut();
             $dateFinInscription = $sortie->getDateLimiteInscription();
@@ -57,27 +58,27 @@ class SortieController extends AbstractController
             $maintenant = new \DateTime();
 
             $diffJours = $dateDebutSortie->diff($maintenant)->days;
-            if ($sortie->getEtat() == $etatAnnulee)
-            if ($maintenant >= $dateDebutSortie && $maintenant <= $dateFinActivite) {
-                $sortie->setEtat($etatEnCours);
-            } elseif (($maintenant >= $dateFinInscription && $diffJours < 30 && $maintenant < $dateDebutSortie)
-                || $sortie->getParticipants()->count() == $sortie->getNbInscriptionsMax() && $maintenant < $dateDebutSortie) {
-                $sortie->setEtat($etatCloturee);
-            }elseif ($maintenant >= $dateDebutSortie && $diffJours < 30) {
-                $sortie->setEtat($etatPassee);
-            } elseif ($diffJours > 30) {
-                $sortie->setEtat($etatHistorisee);
-            }else {
-                // Aucune condition n'est respectée, donc supprimer l'état "ouvert"
-                $sortie->setEtat($etatOuvert);
+            if ($sortie->getEtat() !== $etatAnnulee && $sortie->getEtat() !== $etatCreee) {
+                if ($maintenant >= $dateDebutSortie && $maintenant <= $dateFinActivite) {
+                    $sortie->setEtat($etatEnCours);
+                } elseif (($maintenant >= $dateFinInscription && $diffJours < 30 && $maintenant < $dateDebutSortie)
+                    || $sortie->getParticipants()->count() == $sortie->getNbInscriptionsMax() && $maintenant < $dateDebutSortie) {
+                    $sortie->setEtat($etatCloturee);
+                } elseif ($maintenant >= $dateDebutSortie && $diffJours < 30) {
+                    $sortie->setEtat($etatPassee);
+                } elseif ($diffJours > 30) {
+                    $sortie->setEtat($etatHistorisee);
+                } else {
+                    // Aucune condition n'est respectée, donc supprimer l'état "ouvert"
+                    $sortie->setEtat($etatOuvert);
+                }
             }
-            $sortieRepository->save($sortie,true);
+            $sortieRepository->save($sortie, true);
         }
 
 
-
         return $this->render('sortie/list.html.twig', [
-            'campusChoix'=>$campus,
+            'campusChoix' => $campus,
             'sorties' => $sorties,
             'campusList' => $campusList,
             'searchQuery' => $searchQuery,
@@ -111,16 +112,20 @@ class SortieController extends AbstractController
         Request               $request,
         SortieRepository      $sortieRepository,
         ParticipantRepository $participantRepository,
-        LieuRepository        $lieuRepository
+        LieuRepository        $lieuRepository,
+        EtatRepository        $etatRepository
     ): Response
     {
-
+        $etatCreee = $etatRepository->findOneBy(['libelle' => 'Créée']);
         $username = $this->getUser()->getUserIdentifier();
         $participant = $participantRepository->findOneBy(['username' => $username]);
 
         $sortie = new Sortie();
         $sortie->setDateHeureDebut(new \DateTime());
         $sortie->setDateLimiteInscription(new \DateTime());
+        $sortie->setParticipant($participant);
+        $sortie->setEtat($etatCreee);
+
 
         $sortieForm = $this->createForm(SortieType::class, $sortie);
 
@@ -135,7 +140,7 @@ class SortieController extends AbstractController
             // Rediriger vers la création de sortie en passant le lieu nouvellement créé
             return $this->redirectToRoute('sortie_add', [
                 'lieu' => $lieu->getId(),
-                ]);
+            ]);
         }
 
         // Récupérer l'ID du lieu à partir de la requête
@@ -148,15 +153,12 @@ class SortieController extends AbstractController
         $sortieForm->handleRequest($request);
 
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
-            $sortie->setParticipant($participant);
             $sortieRepository->save($sortie, true);
             $this->addFlash('success', 'La sortie a été ajoutée avec succès.');
             // Vous pouvez rediriger vers la liste des sorties ou une autre page si nécessaire
             return $this->redirectToRoute('sortie_list');
         }
 
-        // Définir les données du formulaire de sortie avec les valeurs existantes
-        $sortieForm->setData($sortie);
 
         return $this->render('sortie/add.html.twig', [
             'sortieForm' => $sortieForm->createView(),
@@ -166,7 +168,7 @@ class SortieController extends AbstractController
 
 
     #[Route('/update/{id}', name: 'update', requirements: ["id" => "\d+"])]
-    public function edit(int $id, SortieRepository $sortieRepository, Request $request, ParticipantRepository $participantRepository)
+    public function update(int $id, SortieRepository $sortieRepository, Request $request, ParticipantRepository $participantRepository)
     {
 
         $sortie = $sortieRepository->find($id);
