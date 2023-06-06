@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Participant;
 use App\Form\RegistrationFormType;
 use App\Repository\ParticipantRepository;
+use App\Repository\SortieRepository;
 use App\Utils\Uploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -106,6 +107,17 @@ class ParticipantController extends AbstractController
         }
 
         return $this->redirectToRoute('participant_list');
+    }
+
+    #[Route('participant/sorties/{id}', name: 'sorties')]
+    public function sorties($id, SortieRepository $sortieRepository):Response
+    {
+        $sorties= $sortieRepository->findBy(['participant'=>$id]);
+        dump($sorties);
+
+        return $this->render('participant/sorties.html.twig', [
+            'sorties' => $sorties
+        ]);
     }
 
 }

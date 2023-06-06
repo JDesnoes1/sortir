@@ -2,7 +2,6 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center; /* Aligne horizontalement les conteneurs au centre */
-
 }
 
 .sortie{
@@ -51,6 +50,37 @@
     border-right: 1px solid #ccc;
 }
 
-li{
-    list-style: none;
+
+/******** navbar ***********/
+nav {
+    background-color: #0d6dfc;
+    padding: 5px;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+li {
+    display: inline;
+    margin: 0 10px;
+}
+
+.nav-perso{
+    display: inline-block;
+}
+.txt-blanc{
+    color: white;
+}
+
+.nav-perso a {
+    text-decoration: none;
+}
+
+.sortir{
+
 }

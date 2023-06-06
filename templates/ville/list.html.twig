@@ -20,10 +20,31 @@
     </ul>
 
 
-    {{ form_start(villeForm, {'action': path('ville_add')}) }}
-    {{ form_widget(villeForm) }}
-    <button type="submit">Ajouter</button>
-    {{ form_end(villeForm) }}
+    <button id="plus-button" onclick="ajouter()">+</button>
+
+    <div id="ville-form" style="display: none;">
+        {{ form_start(villeForm, {'action': path('ville_add')}) }}
+        {{ form_widget(villeForm) }}
+        <button type="submit">Ajouter une ville</button>
+        {{ form_end(villeForm) }}
+    </div>
+
+
+    <script>
+        function ajouter() {
+            var form = document.getElementById("ville-form");
+            var btn = document.getElementById("plus-button");
+
+            if (form.style.display === "none") {
+                form.style.display = "block";
+                btn.innerHTML = "-";
+            } else {
+                form.style.display = "none";
+                btn.innerHTML = "+";
+            }
+        }
+    </script>
+
 
 {% endblock %}
 

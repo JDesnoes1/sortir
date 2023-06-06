@@ -18,12 +18,30 @@
             <br>
         {% endfor %}
     </ul>
+    <button id="plus-button" onclick="ajouter()">+</button>
+
+    <div id="campus-form" style="display: none;">
+        {{ form_start(campusForm, {'action': path('campus_add')}) }}
+        {{ form_widget(campusForm) }}
+        <button type="submit">Ajouter un campus</button>
+        {{ form_end(campusForm) }}
+    </div>
 
 
-    {{ form_start(campusForm, {'action': path('campus_add')}) }}
-    {{ form_widget(campusForm) }}
-    <button type="submit">Ajouter</button>
-    {{ form_end(campusForm) }}
+    <script>
+        function ajouter() {
+            var form = document.getElementById("campus-form");
+            var btn = document.getElementById("plus-button");
+
+            if (form.style.display === "none") {
+                form.style.display = "block";
+                btn.innerHTML = "-";
+            } else {
+                form.style.display = "none";
+                btn.innerHTML = "+";
+            }
+        }
+    </script>
 
 {% endblock %}
 

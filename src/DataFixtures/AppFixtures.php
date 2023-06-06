@@ -42,8 +42,8 @@ class AppFixtures extends Fixture
         // $product = new Product();
         // $manager->persist($product);
 
-        //$this->addLieux($manager);
-        //$this->addParticipants($manager);
+        $this->addLieux($manager);
+        $this->addParticipants($manager);
         $this->addSorties($manager);
 
     }

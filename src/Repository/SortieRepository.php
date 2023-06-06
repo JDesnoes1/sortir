@@ -55,37 +55,37 @@ class SortieRepository extends ServiceEntityRepository
         }
 
         if ($campus) {
-            $queryBuilder->andWhere('s.campus = :campus')
+            $queryBuilder->orWhere('s.campus = :campus')
                 ->setParameter('campus', $campus);
         }
 
         if ($dateDebut) {
-            $queryBuilder->andWhere('s.dateHeureDebut >= :dateDebut')
+            $queryBuilder->orWhere('s.dateHeureDebut >= :dateDebut')
                 ->setParameter('dateDebut', $dateDebut);
         }
 
         if ($dateFin) {
-            $queryBuilder->andWhere('s.dateHeureDebut <= :dateFin')
+            $queryBuilder->orWhere('s.dateHeureDebut <= :dateFin')
                 ->setParameter('dateFin', $dateFin);
         }
         if ($organisateur) {
-            $queryBuilder->andWhere('o.id = :organisateurId')
+            $queryBuilder->orWhere('o.id = :organisateurId')
                 ->setParameter('organisateurId', $participantId);
         }
 
 
         if ($inscrit) {
-            $queryBuilder->andWhere('i.id = :participantId')
+            $queryBuilder->orWhere('i.id = :participantId')
                 ->setParameter('participantId', $participantId);
         }
         if ($nonInscrit) {
-            $queryBuilder->andWhere(':participantId NOT MEMBER OF s.participants')
+            $queryBuilder->orWhere(':participantId NOT MEMBER OF s.participants')
                 ->setParameter('participantId', $participantId);
         }
 
 
         if ($passees) {
-            $queryBuilder->andWhere('s.dateHeureDebut <  :maintenant')
+            $queryBuilder->orWhere('s.dateHeureDebut <  :maintenant')
                 ->setParameter('maintenant', new \DateTime());
         }
 

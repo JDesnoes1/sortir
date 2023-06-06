@@ -1,80 +1,56 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary"> {# fixed top #}
-    <div class="container-fluid">
-
-        {% if (app.user) %}
-            <a class="navbar-brand" href="{{ path('sortie_list') }}">SortirENI</a>
-        {% else %}
-            <a>SortirENI</a>
-        {% endif %}
-
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
+<nav>
+    <ul class="nav-perso">
+            <li class="sortir">
                 {% if (app.user) %}
-                <li class="nav-item"><a class="nav-link" href="{{ path('participant_show', {'id': app.user.id}) }}">Mon
-                        Profil</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ path('sortie_add') }}">Ajouter une sortie</a></li>
-                {% if is_granted('ROLE_ADMIN') %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                           aria-expanded="false">
-                           Participants</a>
+                    <a class="txt-blanc" href="{{ path('sortie_list') }}"><strong>SortirENI</strong></a>
+                {% else %}
+                    <a><strong>SortirENI</strong></a>
+                {% endif %}
+            </li>
+        {% if (app.user) %}
+            <li class="nav-item dropdown">
+                <a class="txt-blanc dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mon profil</a>
                 <ul class="dropdown-menu">
-                    <li class="nav-item"><a class="nav-link" href="{{ path('app_register') }}">Enregistrer un
-                            nouveau participant</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ path('participant_list') }}">Liste des participants</a></li>
+                    <li><a href="{{ path('participant_show', {'id': app.user.id}) }}">Voir mon profil</a></li>
+                    <li><a href="{{ path('participant_sorties', {'id': app.user.id}) }}">Mes Sorties</a></li>
                 </ul>
-                    </li>
+            </li>
+            <li class="nav-item"><a class="txt-blanc" href="{{ path('sortie_add') }}">Ajouter une sortie</a></li>
+            {% if is_granted('ROLE_ADMIN') %}
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                       aria-expanded="false">
-                        Villes</a>
+                    <a class="txt-blanc dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Participants</a>
                     <ul class="dropdown-menu">
-                        <li class="nav-item"><a class="nav-link" href="{{ path('ville_add') }}">Ajouter une
-                                ville</a>
-                        </li>
-                        <li class="nav-item"><a class="nav-link" href="{{ path('ville_list') }}">Liste des
-                                villes</a>
-                        </li>
+                        <li><a href="{{ path('app_register') }}">Enregistrer un nouveau participant</a></li>
+                        <li><a href="{{ path('participant_list') }}">Liste des participants</a></li>
                     </ul>
                 </li>
-
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                       aria-expanded="false">
-                        Campus</a>
+                    <a class="txt-blanc dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Villes</a>
                     <ul class="dropdown-menu">
-                        <li class="nav-item"><a class="nav-link" href="{{ path('campus_add') }}">Ajouter un
-                                campus</a>
-                        </li>
-                        <li class="nav-item"><a class="nav-link" href="{{ path('campus_list') }}">Liste des
-                                campus</a>
-                        </li>
+                        <li><a href="{{ path('ville_add') }}">Ajouter une ville</a></li>
+                        <li><a href="{{ path('ville_list') }}">Liste des villes</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="txt-blanc dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Campus</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ path('campus_add') }}">Ajouter un campus</a></li>
+                        <li><a href="{{ path('campus_list') }}">Liste des campus</a></li>
                     </ul>
                 </li>
                 {% endif %}
-
-
-
-                        <img class="compte" style="height: 40px; width: 40px; border-radius: 50%"
-                             src="{{ asset('img/'~app.user.photo) }}" alt="{{ app.user.nom }}">
-                       <div class="logout">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_logout') }}">({{ app.user.userIdentifier }}) Se déconnecter
-                                </a></li>
-
-
-                    {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{{ path('app_login') }}">Se connecter</a></li>
+                <li class="imgProril">
+                    {% if app.user.photo %}
+                        <img class="compte" style="height: 40px; width: 40px; border-radius: 50%" src="{{ asset('img/'~app.user.photo) }}" alt="{{ app.user.nom }}">
                     {% endif %}
-               </div>
-
-            </ul>
-        </div>
-    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="txt-blanc" href="{{ path('app_logout') }}">({{ app.user.userIdentifier }}) Se déconnecter</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="txt-blanc" href="{{ path('app_login') }}">Se connecter</a>
+                </li>
+            {% endif %}
+    </ul>
 </nav>
