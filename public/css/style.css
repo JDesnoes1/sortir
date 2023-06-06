@@ -71,7 +71,7 @@ li {
 }
 
 .nav-perso{
-    display: inline-block;
+    display: inline-flex;
 }
 .txt-blanc{
     color: white;
