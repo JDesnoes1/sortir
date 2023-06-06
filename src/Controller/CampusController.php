@@ -14,14 +14,20 @@ use Symfony\Component\Routing\Annotation\Route;
 class CampusController extends AbstractController
 {
     #[Route('/', name: 'list')]
-    public function list(CampusRepository $campusRepository): Response
+    public function list(Request $request, CampusRepository $campusRepository): Response
     {
-        $campus= $campusRepository->findAll();
-
-
+        $searchQuery = $request->query->get('q');
+        if ($searchQuery) {
+            $campus = $campusRepository->searchCampus($searchQuery);
+        }
+        else{
+            $campus = $campusRepository->findAll();
+        }
+        $campusForm = $this->createForm(CampusType::class);
 
         return $this->render('campus/list.html.twig', [
-            'campus' => $campus
+            'campus' => $campus,
+            'campusForm'=>$campusForm->createView()
         ]);
     }
     #[Route('/add', name: 'add')]
@@ -35,8 +41,9 @@ class CampusController extends AbstractController
 
         $campusForm->handleRequest($request);
 
-        if ($campusForm->isSubmitted()){
+        if ($campusForm->isSubmitted() && $campusForm->isValid()){
             $campusRepository->save($campus,true);
+            $this->addFlash('success', 'Le campus a été ajouté avec succès.');
             return $this->redirectToRoute('campus_list');
         }
         return $this->render('campus/add.html.twig',[

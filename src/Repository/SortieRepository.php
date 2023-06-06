@@ -85,7 +85,7 @@ class SortieRepository extends ServiceEntityRepository
 
 
         if ($passees) {
-            $queryBuilder->andWhere('s.dateHeureDebut <= :maintenant')
+            $queryBuilder->andWhere('s.dateHeureDebut <  :maintenant')
                 ->setParameter('maintenant', new \DateTime());
         }
 

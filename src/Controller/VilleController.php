@@ -15,14 +15,20 @@ use Symfony\Component\Routing\Annotation\Route;
 class VilleController extends AbstractController
 {
     #[Route('/', name: 'list')]
-    public function list(VilleRepository $villeRepository): Response
+    public function list(Request $request, VilleRepository $villeRepository): Response
     {
-        $villes= $villeRepository->findAll();
-
-
+        $searchQuery = $request->query->get('q');
+        if ($searchQuery) {
+            $villes = $villeRepository->searchVilles($searchQuery);
+        }
+        else{
+            $villes = $villeRepository->findAll();
+        }
+        $villeForm= $this->createForm(VilleType::class);
 
         return $this->render('ville/list.html.twig', [
-            'villes' => $villes
+            'villes' => $villes,
+            'villeForm' => $villeForm->createView()
         ]);
     }
 
@@ -37,8 +43,9 @@ class VilleController extends AbstractController
 
         $villeForm->handleRequest($request);
 
-        if ($villeForm->isSubmitted()){
+        if ($villeForm->isSubmitted() && $villeForm->isValid()){
             $villeRepository->save($ville,true);
+            $this->addFlash('success', 'La ville a été ajouté avec succès.');
             return $this->redirectToRoute('ville_list');
         }
         return $this->render('ville/add.html.twig',[

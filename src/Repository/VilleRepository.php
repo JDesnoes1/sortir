@@ -39,6 +39,24 @@ class VilleRepository extends ServiceEntityRepository
         }
     }
 
+    public function searchVilles($searchQuery)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $queryBuilder = $entityManager->createQueryBuilder();
+        $queryBuilder->select('v')
+            ->from(Ville::class, 'v');
+
+        if ($searchQuery) {
+            $queryBuilder->where('v.nom LIKE :searchQuery')
+                ->setParameter('searchQuery', '%' . $searchQuery . '%');
+
+            $query = $queryBuilder->getQuery();
+            $villes = $query->getResult();
+
+            return $villes;
+        }
+    }
 //    /**
 //     * @return Ville[] Returns an array of Ville objects
 //     */

@@ -36,15 +36,15 @@ class SortieController extends AbstractController
         $passees = $request->query->get('passees');
         $campus= $request->query->get('campus');
 
+        $searchQuery = $request->query->get('q');
+        $dateDebut = $request->query->get('dateDebut');
+        $dateFin = $request->query->get('dateFin');
+
         $etatPassee = $etatRepository->findOneBy(['libelle' => 'Passée']);
         $etatCloturee = $etatRepository->findOneBy(['libelle' => 'Clôturée']);
         $etatEnCours = $etatRepository->findOneBy(['libelle' => 'Activité en cours']);
         $etatHistorisee = $etatRepository->findOneBy(['libelle'=>'Historisée']);
         $etatOuvert = $etatRepository->findOneBy(['libelle'=>'Ouverte']);
-
-        $searchQuery = $request->query->get('q');
-        $dateDebut = $request->query->get('dateDebut');
-        $dateFin = $request->query->get('dateFin');
 
         // Effectuez la recherche en utilisant le repository
         $sorties = $sortieRepository->searchSorties($searchQuery,$campus, $dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $passees, $participantId);

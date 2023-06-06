@@ -63,4 +63,22 @@ class CampusRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function searchCampus($searchQuery)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $queryBuilder = $entityManager->createQueryBuilder();
+        $queryBuilder->select('c')
+            ->from(Campus::class, 'c');
+
+        if ($searchQuery) {
+            $queryBuilder->where('c.nom LIKE :searchQuery')
+                ->setParameter('searchQuery', '%' . $searchQuery . '%');
+
+            $query = $queryBuilder->getQuery();
+            $campus = $query->getResult();
+
+            return $campus;
+        }
+    }
 }

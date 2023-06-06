@@ -2,22 +2,32 @@
 
 {% block body %}
     <h2>Liste des villes</h2>
+    <form action="{{ path('ville_list') }}" method="GET">
+        <label for="recherche">Le nom de la ville contient : </label>
+        <input type="text" name="q" id="recherche" value="{{ searchQuery ?? '' }}" placeholder="Rechercher une ville">
+        <button type="submit">Rechercher</button>
+    </form>
 
     <ul>
-    {% for ville in villes %}
-        <br>
-    <li>Ville: {{ ville.nom }}</li>
-    <li>Code postal: {{ ville.codePostal}} </li>
-        <a href="{{ path('ville_update', {'id':ville.id}) }}">Modifier</a> | <a href="{{ path('ville_delete', {'id': ville.id}) }}">Supprimer</a>
-        <br>
-    {% endfor %}
+        {% for ville in villes %}
+            <br>
+            <li>Ville: {{ ville.nom }}</li>
+            <li>Code postal: {{ ville.codePostal }} </li>
+            <a href="{{ path('ville_update', {'id':ville.id}) }}">Modifier</a> | <a
+                href="{{ path('ville_delete', {'id': ville.id}) }}">Supprimer</a>
+            <br>
+        {% endfor %}
     </ul>
 
-    <a href="{{ path('ville_add') }}">Ajouter une ville</a>
+
+    {{ form_start(villeForm, {'action': path('ville_add')}) }}
+    {{ form_widget(villeForm) }}
+    <button type="submit">Ajouter</button>
+    {{ form_end(villeForm) }}
 
 {% endblock %}
 
-{% block title %}
+        {% block title %}
 
-{% endblock %}
+        {% endblock %}
 
