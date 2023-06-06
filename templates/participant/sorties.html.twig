@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container-sorties">
+        <table>
+            <thead>
+            <tr>
+                <th>Nom de la sortie</th>
+                <th>Date de la sortie</th>
+                <th>date limite d'inscription</th>
+                <th>Inscrits/places</th>
+                <th>Etat</th>
+                <th>Organisateur</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for sortie in sorties %}
+                <tr>
+                    <td><a href="{{ path('sortie_details', {'id': sortie.id}) }}">{{ sortie.nom }}</a></td>
+                    <td>{{ sortie.dateHeureDebut | date('d/m/y H:i') }}</td>
+                    <td>{{ sortie.dateLimiteInscription | date('d/m/y') }}</td>
+                    <td>{{ sortie.participants.count }}/{{ sortie.nbInscriptionsMax }}</td>
+                    <td>{{ sortie.etat.libelle }}</td>
+                    <td><a class="link_button"
+                           href="{{ path('participant_show', {'id': sortie.participant.id}) }}">{{ sortie.participant.userIdentifier }}</a>
+                    </td>
+
+                    <td>
+                        <a class="btn btn-outline-primary" href="{{ path('sortie_details', {'id': sortie.id}) }}">Afficher</a>
+                        <div class="button-tab-container">
+                            <a class="btn btn-outline-primary" href="{{ path('sortie_update', {'id':sortie.id}) }}">Modifier</a>
+                            <a class="btn btn-outline-primary" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+
