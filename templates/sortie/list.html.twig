@@ -82,10 +82,10 @@
                         {% if sortie.participant.id is not same as(app.user.id) %}
                             <a class="btn btn-outline-primary" href="{{ path('sortie_details', {'id': sortie.id}) }}">Afficher</a>
                             {% if sortie.getParticipants().contains(app.user) %}
-                                <a class="btn btn-outline-primary" href="{{ path('sortie_desinscription', {'sortieId': sortie.id}) }}">Se désinscrire</a>
+                                <a class="btn btn-outline-primary" href="{{ path('sortie_desinscription', {'sortieId': sortie.id, 'redirectToList': true}) }}">Se désinscrire</a>
                             {% else %}
                                 {% if sortie.getParticipants.count<sortie.getNbInscriptionsMax() and sortie.etat.libelle == 'Ouverte' %}
-                                <a class="btn btn-outline-primary" href="{{ path('sortie_inscription', {'sortieId': sortie.id}) }}">S'inscrire</a>
+                                <a class="btn btn-outline-primary" href="{{ path('sortie_inscription', {'sortieId': sortie.id,'redirectToList': true}) }}" >S'inscrire</a>
                             {% endif %}
                             {% endif %}
                         {% endif %}

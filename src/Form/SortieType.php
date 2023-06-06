@@ -22,13 +22,11 @@ class SortieType extends AbstractType
             ->add('nom')
             ->add('dateHeureDebut', DateTimeType::class, [
                 'widget'=>'single_text',
-                'html5'=>true,
-                'data' => new \DateTime()
+                'html5'=>true
             ])
             ->add('dateLimiteInscription', DateType::class, [
                 'widget'=>'single_text',
-                'html5'=>true,
-                'data' => new \DateTime()
+                'html5'=>true
             ])
             ->add('nbInscriptionsMax')
             ->add('duree')

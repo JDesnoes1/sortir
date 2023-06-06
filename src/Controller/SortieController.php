@@ -45,6 +45,7 @@ class SortieController extends AbstractController
         $etatEnCours = $etatRepository->findOneBy(['libelle' => 'Activité en cours']);
         $etatHistorisee = $etatRepository->findOneBy(['libelle'=>'Historisée']);
         $etatOuvert = $etatRepository->findOneBy(['libelle'=>'Ouverte']);
+        $etatAnnulee = $etatRepository->findOneBy(['libelle'=>'Annulée']);
 
         // Effectuez la recherche en utilisant le repository
         $sorties = $sortieRepository->searchSorties($searchQuery,$campus, $dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $passees, $participantId);
@@ -56,7 +57,7 @@ class SortieController extends AbstractController
             $maintenant = new \DateTime();
 
             $diffJours = $dateDebutSortie->diff($maintenant)->days;
-
+            if ($sortie->getEtat() == $etatAnnulee)
             if ($maintenant >= $dateDebutSortie && $maintenant <= $dateFinActivite) {
                 $sortie->setEtat($etatEnCours);
             } elseif (($maintenant >= $dateFinInscription && $diffJours < 30 && $maintenant < $dateDebutSortie)
@@ -113,10 +114,14 @@ class SortieController extends AbstractController
         LieuRepository        $lieuRepository
     ): Response
     {
+
         $username = $this->getUser()->getUserIdentifier();
         $participant = $participantRepository->findOneBy(['username' => $username]);
 
         $sortie = new Sortie();
+        $sortie->setDateHeureDebut(new \DateTime());
+        $sortie->setDateLimiteInscription(new \DateTime());
+
         $sortieForm = $this->createForm(SortieType::class, $sortie);
 
         $lieu = new Lieu();
@@ -130,9 +135,6 @@ class SortieController extends AbstractController
             // Rediriger vers la création de sortie en passant le lieu nouvellement créé
             return $this->redirectToRoute('sortie_add', [
                 'lieu' => $lieu->getId(),
-
-
-
                 ]);
         }
 
@@ -171,6 +173,7 @@ class SortieController extends AbstractController
         $username = $this->getUser()->getUserIdentifier();
         $participant = $participantRepository->findOneBy(['username' => $username]);
 
+
         if ($sortie->getParticipant()->getId() !== $participant->getId()) {
             return $this->render('sortie/show.html.twig', [
                 'sortie' => $sortie
@@ -179,6 +182,7 @@ class SortieController extends AbstractController
 
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
+
 
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
             $sortieRepository->save($sortie, true);
@@ -215,7 +219,7 @@ class SortieController extends AbstractController
     }
 
     #[Route('/inscription/{sortieId}', name: 'inscription')]
-    public function inscriptionSortie(int $sortieId, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, EntityManagerInterface $entityManager, SessionInterface $session)
+    public function inscriptionSortie(Request $request, int $sortieId, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, EntityManagerInterface $entityManager, SessionInterface $session)
     {
         // Récupérer la formation et le participant correspondant
         $sortie = $sortieRepository->find($sortieId);
@@ -234,6 +238,11 @@ class SortieController extends AbstractController
         // Insérer le participant dans la table d'association
         $sortie->addParticipant($participant);
         $entityManager->flush();
+
+        $redirectToList = $request->query->get('redirectToList', false);
+        if ($redirectToList) {
+            return $this->redirectToRoute('sortie_list');
+        }
         // Rediriger ou générer une réponse appropriée
         $session->getFlashBag()->add('success', 'Vous avez été inscrit avec succès à la sortie.');
         return $this->render('sortie/show.html.twig', [
@@ -242,7 +251,7 @@ class SortieController extends AbstractController
     }
 
     #[Route('/desinscription/{sortieId}', name: 'desinscription')]
-    public function desinscriptionSortie(int $sortieId, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, EntityManagerInterface $entityManager, SessionInterface $session)
+    public function desinscriptionSortie(Request $request, int $sortieId, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, EntityManagerInterface $entityManager, SessionInterface $session)
     {
         // Récupérer la sortie et le participant correspondant
         $sortie = $sortieRepository->find($sortieId);
@@ -261,6 +270,11 @@ class SortieController extends AbstractController
         // Supprimer le participant de la table d'association
         $sortie->removeParticipant($participant);
         $entityManager->flush();
+
+        $redirectToList = $request->query->get('redirectToList', false);
+        if ($redirectToList) {
+            return $this->redirectToRoute('sortie_list');
+        }
 
         // Rediriger ou générer une réponse appropriée
         $session->getFlashBag()->add('success', 'Vous avez été désinscrit avec succès de la sortie.');
