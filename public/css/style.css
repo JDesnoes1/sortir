@@ -5,6 +5,12 @@
 
 }
 
+.compte{
+    display: flex;
+    flex-direction: row-reverse;
+
+}
+
 .sortie{
     //box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.1);
     border: 2px solid #b0e0ef;
