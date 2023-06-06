@@ -11,6 +11,7 @@
 
         <label for="campus">Campus:</label>
         <select name="campus" id="campus">
+            <option value="">Aucun</option>
             {% for campus in campusList %}
                 {% if campus.id == campusChoix %}
                     <option value="{{ campus.id }}" selected>{{ campus.nom }}</option>
