@@ -11,6 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\Regex;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
@@ -46,6 +47,10 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    #[Regex(
+        pattern: '/^\D*$/',
+        message: 'Le nom ne peut pas contenir de numéros.'
+    )]
     #[Assert\NotBlank(message: "Le nom ne peut pas être null")]
     #[Assert\Length(
         min: 2,
@@ -56,6 +61,10 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
 
+    #[Regex(
+        pattern: '/^\D*$/',
+        message: 'Le Prénom ne peut pas contenir de numéros.'
+    )]
     #[Assert\NotBlank(message: "Le prénom ne peut pas être null")]
     #[Assert\Length(
         min: 2,
@@ -65,6 +74,11 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     #[ORM\Column(length: 100)]
     private ?string $prenom = null;
+
+    #[Regex(
+        pattern: '/^\d+$/',
+        message: 'Le téléphone ne peut contenir que des chiffres.'
+    )]
     #[ORM\Column(length: 10)]
     private ?string $telephone = null;
 

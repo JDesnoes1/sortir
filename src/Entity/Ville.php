@@ -6,9 +6,22 @@ use App\Repository\VilleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\Regex;
 
 #[ORM\Entity(repositoryClass: VilleRepository::class)]
+
+#[UniqueEntity(
+    fields: 'nom',
+    message: 'Ce nom de ville est déjà utilisé.'
+)]
+
+#[UniqueEntity(
+    fields: 'codePostal',
+    message: 'Le code postal est déjà utilisé.'
+)]
+
 class Ville
 {
     #[ORM\Id]
@@ -16,6 +29,11 @@ class Ville
     #[ORM\Column]
     private ?int $id = null;
 
+
+    #[Regex(
+        pattern: '/^\D*$/',
+        message: 'Le nom de la ville ne peut pas contenir de chiffres.'
+    )]
     #[Assert\NotBlank()]
     #[Assert\Length(
         min: 2,
@@ -26,6 +44,10 @@ class Ville
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
 
+    #[Regex(
+        pattern: '/^\d+$/',
+        message: 'Le code postal ne peut contenir que des chiffres.'
+    )]
     #[Assert\NotBlank()]
     #[Assert\Length(
         min: 5,
