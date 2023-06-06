@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints\Regex;
 
 #[ORM\Entity(repositoryClass: CampusRepository::class)]
 
+//Permet de rajouter une contrainte d'unicité
 #[UniqueEntity(
     fields: 'nom',
     message: 'Ce nom de campus est déjà utilisé.'
