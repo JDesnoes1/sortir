@@ -27,7 +27,7 @@
                     <a href="{{ path('sortie_desinscription', {'sortieId': sortie.id}) }}" class="btn btn-primary">Se
                         désinscrire</a>
                 {% else %}
-                    {% if sortie.dateLimiteInscription > date('now') %}
+                    {% if sortie.dateLimiteInscription < date('now') %}
 
                     {% elseif sortie.getParticipants.count<sortie.getNbInscriptionsMax() and sortie.etat.libelle == "Ouverte" %}
                         <a href="{{ path('sortie_inscription', {'sortieId': sortie.id}) }}" class="btn btn-primary">S'inscrire</a>
