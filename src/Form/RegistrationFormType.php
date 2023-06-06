@@ -34,7 +34,8 @@ class RegistrationFormType extends AbstractType
                 /*'mapped'=>false*/
             ])
             ->add('photo', FileType::class,[
-                'mapped'=>false
+                'mapped'=>false,
+                'required'=>false
             ])
 
             ->add('Password', RepeatedType::class, [
@@ -46,7 +47,7 @@ class RegistrationFormType extends AbstractType
                     'attr' => ['autocomplete' => 'new-password'],
                     'constraints' => [
                         new NotBlank([
-                            'message' => 'Please enter a password.',
+                            'message' => 'Veuillez insérer un mot de passe svp',
                         ]),
                         new Length([
                             'min' => 6,

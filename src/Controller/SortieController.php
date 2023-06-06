@@ -113,6 +113,7 @@ class SortieController extends AbstractController
         SortieRepository      $sortieRepository,
         ParticipantRepository $participantRepository,
         LieuRepository        $lieuRepository,
+        VilleRepository       $villeRepository,
         EtatRepository        $etatRepository
     ): Response
     {
@@ -127,11 +128,17 @@ class SortieController extends AbstractController
         $sortie->setEtat($etatCreee);
 
 
-        $sortieForm = $this->createForm(SortieType::class, $sortie);
+        $villes = $villeRepository->findAll();
+
+        $sortieForm = $this->createForm(SortieType::class, $sortie, ['villes' => $villes]);
+
+        $sortie->setCampus($participant->getCampus());
 
         $lieu = new Lieu();
         $lieuForm = $this->createForm(LieuType::class, $lieu);
         $lieuForm->handleRequest($request);
+
+        $villeForm = $this->createForm(SortieType::class, $sortie, ['villes' => $villes]);
 
         if ($lieuForm->isSubmitted() && $lieuForm->isValid()) {
             $lieuRepository->save($lieu, true);
