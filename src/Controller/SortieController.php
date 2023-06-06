@@ -111,7 +111,8 @@ class SortieController extends AbstractController
         Request               $request,
         SortieRepository      $sortieRepository,
         ParticipantRepository $participantRepository,
-        LieuRepository        $lieuRepository
+        LieuRepository        $lieuRepository,
+        VilleRepository $villeRepository
     ): Response
     {
 
@@ -122,11 +123,17 @@ class SortieController extends AbstractController
         $sortie->setDateHeureDebut(new \DateTime());
         $sortie->setDateLimiteInscription(new \DateTime());
 
-        $sortieForm = $this->createForm(SortieType::class, $sortie);
+        $villes = $villeRepository->findAll();
+
+        $sortieForm = $this->createForm(SortieType::class, $sortie, ['villes' => $villes]);
+
+        $sortie->setCampus($participant->getCampus());
 
         $lieu = new Lieu();
         $lieuForm = $this->createForm(LieuType::class, $lieu);
         $lieuForm->handleRequest($request);
+
+        $villeForm = $this->createForm(SortieType::class, $sortie, ['villes' => $villes]);
 
         if ($lieuForm->isSubmitted() && $lieuForm->isValid()) {
             $lieuRepository->save($lieu, true);
