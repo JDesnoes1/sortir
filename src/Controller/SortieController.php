@@ -308,7 +308,29 @@ class SortieController extends AbstractController
             'sortie' => $sortie
         ]);
     }
+    #[Route('/publish/{id}', name: 'publish', requirements: ["id" => "\d+"])]
+    public function publish(int $id, SortieRepository $sortieRepository,EtatRepository $etatRepository, ParticipantRepository $participantRepository)
+    {
 
+        $sortie = $sortieRepository->find($id);
+        $username = $this->getUser()->getUserIdentifier();
+        $participant = $participantRepository->findOneBy(['username' => $username]);
+        $Ouverte = $etatRepository->findOneBy(['libelle' => 'Ouverte']);
+        
+        if ($sortie->getParticipant()->getId() !== $participant->getId()) {
+            return $this->render('sortie/show.html.twig', [
+                'sortie' => $sortie
+            ]);
+        }
+
+        $sortie->setEtat($Ouverte);
+        $sortieRepository->save($sortie, true);
+
+        return $this->render('sortie/show.html.twig', [
+            'sortie' => $sortie
+        ]);
+
+    }
 
 }
 

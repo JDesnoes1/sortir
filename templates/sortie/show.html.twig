@@ -1,4 +1,12 @@
 {% extends 'base.html.twig' %}
+{% block head %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+{% endblock %}
 
 {% block title %}
 
@@ -47,12 +55,35 @@
                 <button><a class="link_button" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer </a>
                 </button>
             {% endif %}
+
+
+
+
+
             {% for flashMessage in app.session.flashBag.get('success') %}
                 <div class="alert alert-success">
                     {{ flashMessage }}
                 </div>
             {% endfor %}
         </div>
+        <div id="map"></div>
+
+        <script>
+
+            // Initialisez la carte Leaflet dans la balise script
+            var map = L.map('map').setView([{{ sortie.lieu.latitude }}, {{ sortie.lieu.longitude }}], 13);
+
+            // Ajoutez une couche de tuiles (par exemple, OpenStreetMap)
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+
+            //Possibilité d'ajouter un marker avec les longitudes et latitudes
+            var marker = L.marker([48.858370, 2.294481]).addTo(map);
+
+        </script>
+
 
         <div class="nbParticipants">
             <h3>Participants :</h3>

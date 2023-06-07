@@ -55,17 +55,17 @@ class SortieRepository extends ServiceEntityRepository
         }
 
         if ($campus) {
-            $queryBuilder->orWhere('s.campus = :campus')
+            $queryBuilder->andWhere('s.campus = :campus')
                 ->setParameter('campus', $campus);
         }
 
         if ($dateDebut) {
-            $queryBuilder->orWhere('s.dateHeureDebut >= :dateDebut')
+            $queryBuilder->andWhere('s.dateHeureDebut >= :dateDebut')
                 ->setParameter('dateDebut', $dateDebut);
         }
 
         if ($dateFin) {
-            $queryBuilder->orWhere('s.dateHeureDebut <= :dateFin')
+            $queryBuilder->andWhere('s.dateHeureDebut <= :dateFin')
                 ->setParameter('dateFin', $dateFin);
         }
         if ($organisateur) {

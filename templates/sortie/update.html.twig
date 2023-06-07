@@ -5,8 +5,13 @@
         {% block h2 %} Enregistrer {% endblock %}
         {% block buttonLabel %} Enregistrer {% endblock %}
     {% endembed %}
-    <a href="{{ path('sortie_list')}}" class="btn btn-outline-primary" >Publier</a>
-    <a class="btn btn-outline-primary" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a>
+    {% if (sortie.etat.libelle is same as "Créée") %}
+        <a href="{{ path('sortie_publish', {'id': sortie.id})}}" class="btn btn-outline-primary" >Publier</a>
+        <a class="btn btn-outline-primary" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a>
+    {% endif %}
+    {% if (sortie.etat.libelle is same as "Ouverte") %}
+    <a class="btn btn-outline-primary" onclick="confirmCancellation()">Annuler la sortie</a>
+    {% endif %}
     <a href="{{ path('sortie_list')}}" class="btn btn-outline-primary" >Retour</a>
 
 
@@ -16,7 +21,7 @@
             if (confirmation) {
                 var cancellationReason = prompt("Veuillez saisir le motif d'annulation :");
                 if (cancellationReason !== null) {
-                    var url = "{{ path('sortie_cancel', {'id': 0, 'reason': 'REASON_PLACEHOLDER'}) }}";
+                    var url = "{{ path('sortie_cancel', {'id': sortie.id, 'reason': 'REASON_PLACEHOLDER'}) }}";
                     url = url.replace(0, sortieId).replace('REASON_PLACEHOLDER', encodeURIComponent(cancellationReason));
                     window.location.href = url;
                 }
