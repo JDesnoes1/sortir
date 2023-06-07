@@ -33,16 +33,16 @@ class SortieType extends AbstractType
             ->add('infosSortie')
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
+                'disabled' => true,
                 'choice_label' => 'nom'
                 /*'mapped'=>false*/
             ])
-            //A faire plus tard : Piste QueryBuilder
-            /*->add('', EntityType::class, [
+            ->add('ville', EntityType::class, [
                 'class' => Ville::class,
-                'choices' => $options['villes'], // Utilisez l'option 'villes'
-                'choice_label' => 'nom', // Remplacez par la propriété appropriée de Ville
-                'mapped'=>false
-            ])*/
+                'choices' => $options['villes'],
+                'choice_label' => 'nom',
+                'mapped' => false
+            ])
             ->add('lieu', EntityType::class,[
                 'class' => Lieu::class,
                 'choice_label' => 'nom'
