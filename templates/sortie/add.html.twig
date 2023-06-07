@@ -33,4 +33,38 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        jQuery(document).ready(function () {
+            // Récupérer les éléments HTML des champs Ville et Lieu
+            var villeSelect = jQuery('#sortie_ville');
+            var lieuSelect = jQuery('#sortie_lieu');
+
+            // Écouter l'événement de changement de valeur du champ Ville
+            villeSelect.change(function () {
+                var villeId = jQuery(this).val();
+
+                // Envoyer une requête AJAX pour récupérer les lieux correspondants à la ville sélectionnée
+                jQuery.ajax({
+                    url: '{{ path('ville_recuperer_lieux') }}',
+                    type: 'GET',
+                    data: {villeId: villeId},
+                    dataType: 'json',
+                    success: function (response) {
+                        // Effacer les options actuelles du champ Lieu
+                        lieuSelect.empty();
+
+                        // Ajouter les nouvelles options basées sur la réponse de la requête AJAX
+                        response.forEach(function (lieu) {
+                            lieuSelect.append('<option value="' + lieu.id + '">' + lieu.nom + '</option>');
+                        });
+                    },
+                    error: function () {
+                        // Gérer les erreurs de la requête AJAX si nécessaire
+                    }
+                });
+            });
+        });
+    </script>
+
 {% endblock %}

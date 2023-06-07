@@ -7,6 +7,7 @@ use App\Form\VilleType;
 use App\Repository\LieuRepository;
 use App\Repository\VilleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -88,5 +89,27 @@ class VilleController extends AbstractController
 
 
         return $this->redirectToRoute('ville_list');
+    }
+
+
+    #[Route('/Recuplieux', name:'recuperer_lieux')]
+    public function recupererLieux(Request $request, LieuRepository $lieuRepository): JsonResponse
+    {
+        $villeId = $request->query->get('villeId');
+
+        // Récupérer les lieux correspondants à la ville sélectionnée
+        $lieux = $lieuRepository->findBy(['ville' => $villeId]);
+
+        // Préparer les données des lieux pour la réponse JSON
+        $lieuxData = [];
+        foreach ($lieux as $lieu) {
+            $lieuxData[] = [
+                'id' => $lieu->getId(),
+                'nom' => $lieu->getNom(),
+            ];
+        }
+
+        // Retourner les données en tant que réponse JSON
+        return new JsonResponse($lieuxData);
     }
 }
