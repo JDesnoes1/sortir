@@ -5,6 +5,7 @@
 {% block body %}
 
     <div class="ShowUser">
+        <div class="infos">
         <h3>Profil de {{ participant.userIdentifier }}</h3>
         <p>Prenom : {{participant.prenom }}</p>
         <p>Nom : {{ participant.nom }}</p>
@@ -20,6 +21,7 @@
             {{ form_widget(form) }}
             <button type="submit" class="btn btn-primary">Enregistrer </button>
         </form>#}
+        </div>
     </div>
 
 

@@ -1,23 +1,25 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
+    <br>
     <h2>Liste des villes</h2>
     <form action="{{ path('ville_list') }}" method="GET">
         <label for="recherche">Le nom de la ville contient : </label>
-        <input type="text" name="q" id="recherche" value="{{ searchQuery ?? '' }}" placeholder="Rechercher une ville">
-        <button type="submit">Rechercher</button>
+        <input class="input" type="text" name="q" id="recherche" value="{{ searchQuery ?? '' }}" placeholder="Rechercher une ville">
+        <button class="btn btn-outline-primary" type="submit">Rechercher</button>
     </form>
 
-    <ul>
+    <div>
         {% for ville in villes %}
             <br>
-            <li>Ville: {{ ville.nom }}</li>
-            <li>Code postal: {{ ville.codePostal }} </li>
-            <a href="{{ path('ville_update', {'id':ville.id}) }}">Modifier</a> | <a
-                href="{{ path('ville_delete', {'id': ville.id}) }}">Supprimer</a>
+            <li>Ville : {{ ville.nom }}</li>
+            <li>Code postal : {{ ville.codePostal }} </li>
+            <a class="btn btn-outline-primary" href="{{ path('ville_update', {'id':ville.id}) }}">Modifier</a>
+            <a class="btn btn-outline-primary" href="{{ path('ville_delete', {'id': ville.id}) }}">Supprimer</a>
             <br>
         {% endfor %}
-    </ul>
+    </div>
 
 
     <button id="plus-button" onclick="ajouter()">+</button>

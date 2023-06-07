@@ -5,15 +5,30 @@
 {% endblock %}
 
 {% block body %}
+    <br>
     <div>
-        {{ form_start(sortieForm) }}
-        {{ form_widget(sortieForm) }}
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalLieu">
-            Ajouter un lieu
-        </button>
-        <button class="btn btn-primary">{% block buttonLabel %}Ajouter une sortie{% endblock %}</button>
-        {{ form_end(sortieForm) }}
+        <div class="container-sorties">
+            <div class="infosSortie">
+            {{ form_start(sortieForm) }}
+            {{ form_row(sortieForm.nom) }}<br>
+            {{ form_row(sortieForm.dateLimiteInscription) }}<br>
+            {{ form_row(sortieForm.nbInscriptionsMax) }}<br>
+            {{ form_row(sortieForm.duree) }}<br>
+            {{ form_row(sortieForm.infosSortie) }}<br>
+            {{ form_row(sortieForm.campus) }}<br>
+            {{ form_row(sortieForm.ville) }}<br>
+            {{ form_row(sortieForm.lieu) }}<br>
+            {{ form_widget(sortieForm) }}<br>
 
+
+        <button type="button" class="btn btn-outline-primary data-toggle=" modal  data-target="#modalLieu">
+        Ajouter un lieu
+        </button>
+        <button class="btn btn-outline-primary">{% block buttonLabel %}Ajouter une sortie{% endblock %}</button>
+        {{ form_end(sortieForm) }}
+    </div>
+    </div>
+        </div>
         <div class="modal fade" id="modalLieu" tabindex="-1" aria-labelledby="modalLieuLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">

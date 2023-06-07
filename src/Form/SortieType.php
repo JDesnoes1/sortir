@@ -19,31 +19,44 @@ class SortieType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom')
+            ->add('nom', null, [
+                'label' => 'Nom : '
+            ])
             ->add('dateHeureDebut', DateTimeType::class, [
+                'label' => 'Début : ',
                 'widget'=>'single_text',
                 'html5'=>true
             ])
             ->add('dateLimiteInscription', DateType::class, [
+                'label' => 'Date limite d\'inscription : ',
                 'widget'=>'single_text',
                 'html5'=>true
             ])
-            ->add('nbInscriptionsMax')
-            ->add('duree')
-            ->add('infosSortie')
+            ->add('nbInscriptionsMax', null, [
+                'label' => 'Nb inscriptions max : '
+            ])
+            ->add('duree', null, [
+                'label' => 'Durée : '
+            ])
+            ->add('infosSortie', null, [
+                'label' => 'Infos Sortie : '
+            ])
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
+                'label' => 'Campus : ',
                 'disabled' => true,
                 'choice_label' => 'nom'
                 /*'mapped'=>false*/
             ])
             ->add('ville', EntityType::class, [
+                'label' => 'Villes : ',
                 'class' => Ville::class,
                 'choices' => $options['villes'],
                 'choice_label' => 'nom',
                 'mapped' => false
             ])
             ->add('lieu', EntityType::class,[
+                'label' => 'Lieu : ',
                 'class' => Lieu::class,
                 'choice_label' => 'nom'
             ])

@@ -5,7 +5,7 @@
     <h2>Liste des campus</h2>
     <form action="{{ path('campus_list') }}" method="GET">
         <label for="recherche">Le nom du campus contient : </label>
-        <input type="text" name="q" id="recherche" value="{{ searchQuery ?? '' }}" placeholder="Rechercher un campus">
+        <input class="input" type="text" name="q" id="recherche" value="{{ searchQuery ?? '' }}" placeholder="Rechercher un campus">
         <button type="submit">Rechercher</button>
     </form>
 
