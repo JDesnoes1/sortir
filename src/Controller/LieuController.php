@@ -10,6 +10,7 @@ use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -63,6 +64,29 @@ class LieuController extends AbstractController
             'sortieForm' => $sortieForm->createView(),
             'lieuForm' => $lieuForm->createView(),
         ]);
+    }
+
+
+
+
+    #[Route('/recupRue', name:'recuperer_rue')]
+    public function recupererDetailsLieu(Request $request, LieuRepository $lieuRepository)
+    {
+        $lieuId = $request->query->get('lieuId');
+
+        // Récupérer les détails du lieu en fonction de l'ID
+        $lieu = $lieuRepository->find($lieuId);
+
+        if (!$lieu) {
+            throw $this->createNotFoundException('Lieu non trouvé.');
+        }
+
+        $lieuData = [
+            'rue' => $lieu->getRue(),
+        ];
+
+        // Retourner les données en tant que réponse JSON
+        return new JsonResponse($lieuData);
     }
 
 

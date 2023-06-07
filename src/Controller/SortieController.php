@@ -132,13 +132,14 @@ class SortieController extends AbstractController
 
         $sortieForm = $this->createForm(SortieType::class, $sortie, ['villes' => $villes]);
 
+
         $sortie->setCampus($participant->getCampus());
 
         $lieu = new Lieu();
         $lieuForm = $this->createForm(LieuType::class, $lieu);
         $lieuForm->handleRequest($request);
 
-        $villeForm = $this->createForm(SortieType::class, $sortie, ['villes' => $villes]);
+
 
         if ($lieuForm->isSubmitted() && $lieuForm->isValid()) {
             $lieuRepository->save($lieu, true);
@@ -175,7 +176,7 @@ class SortieController extends AbstractController
 
 
     #[Route('/update/{id}', name: 'update', requirements: ["id" => "\d+"])]
-    public function update(int $id, SortieRepository $sortieRepository, Request $request, ParticipantRepository $participantRepository)
+    public function update(int $id,VilleRepository $villeRepository, SortieRepository $sortieRepository, Request $request, ParticipantRepository $participantRepository)
     {
 
         $sortie = $sortieRepository->find($id);
@@ -189,7 +190,9 @@ class SortieController extends AbstractController
             ]);
         }
 
-        $sortieForm = $this->createForm(SortieType::class, $sortie);
+        $villes = $villeRepository->findAll();
+
+        $sortieForm = $this->createForm(SortieType::class, $sortie, ['villes' => $villes]);
         $sortieForm->handleRequest($request);
 
 

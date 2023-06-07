@@ -8,11 +8,14 @@
     <div>
         {{ form_start(sortieForm) }}
         {{ form_widget(sortieForm) }}
+        <div id="codePost">Code postal : </div>
+        <div id="rue">Rue : </div>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalLieu">
             Ajouter un lieu
         </button>
         <button class="btn btn-primary">{% block buttonLabel %}Ajouter une sortie{% endblock %}</button>
         {{ form_end(sortieForm) }}
+
 
         <div class="modal fade" id="modalLieu" tabindex="-1" aria-labelledby="modalLieuLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -35,6 +38,8 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        var villeSelect = jQuery('#sortie_ville');
+        if (villeSelect!==null){
         jQuery(document).ready(function () {
             // Récupérer les éléments HTML des champs Ville et Lieu
             var villeSelect = jQuery('#sortie_ville');
@@ -57,6 +62,7 @@
                         // Ajouter les nouvelles options basées sur la réponse de la requête AJAX
                         response.forEach(function (lieu) {
                             lieuSelect.append('<option value="' + lieu.id + '">' + lieu.nom + '</option>');
+                            document.getElementById("codePost").innerHTML = "Code postal : " + lieu.codePostal;
                         });
                     },
                     error: function () {
@@ -64,7 +70,28 @@
                     }
                 });
             });
-        });
+
+            lieuSelect.change(function() {
+                var lieuId = jQuery(this).val();
+
+                // Envoyer une requête AJAX pour récupérer les détails du lieu sélectionné
+                jQuery.ajax({
+                    url: '{{ path('lieu_recuperer_rue') }}',
+                    type: 'GET',
+                    data: {lieuId: lieuId},
+                    dataType: 'json',
+                    success: function (response) {
+                        // Mettre à jour la valeur de la rue avec le détail du lieu sélectionné
+                        var rueInput = jQuery('#sortie_rue');
+                        rueInput.val(response.rue);
+                        document.getElementById("rue").innerHTML = "Rue : " + response.rue;
+                    },
+                    error: function () {
+                        // Gérer les erreurs de la requête AJAX si nécessaire
+                    }
+                });
+            });
+        });}
     </script>
 
 {% endblock %}

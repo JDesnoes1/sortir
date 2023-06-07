@@ -106,6 +106,8 @@ class VilleController extends AbstractController
             $lieuxData[] = [
                 'id' => $lieu->getId(),
                 'nom' => $lieu->getNom(),
+                'rue' => $lieu->getRue(),
+                'codePostal' => $lieu->getVille()->getCodePostal()
             ];
         }
 

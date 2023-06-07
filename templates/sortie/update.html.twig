@@ -1,10 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {% embed 'vues/form/default_form.twig' with {'form':sortieForm} %}
-        {% block h2 %} Enregistrer {% endblock %}
-        {% block buttonLabel %} Enregistrer {% endblock %}
-    {% endembed %}
+<div>
+    {{ form_start(sortieForm) }}
+    {{ form_widget(sortieForm) }}
+    <div id="codePost">Code postal : </div>
+    <div id="rue">Rue : </div>
+
     {% if (sortie.etat.libelle is same as "Créée") %}
         <a href="{{ path('sortie_publish', {'id': sortie.id})}}" class="btn btn-outline-primary" >Publier</a>
         <a class="btn btn-outline-primary" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a>
@@ -14,7 +16,63 @@
     {% endif %}
     <a href="{{ path('sortie_list')}}" class="btn btn-outline-primary" >Retour</a>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var villeSelect = jQuery('#sortie_ville');
+        if (villeSelect!==null){
+            jQuery(document).ready(function () {
+                // Récupérer les éléments HTML des champs Ville et Lieu
+                var villeSelect = jQuery('#sortie_ville');
+                var lieuSelect = jQuery('#sortie_lieu');
 
+                // Écouter l'événement de changement de valeur du champ Ville
+                villeSelect.change(function () {
+                    var villeId = jQuery(this).val();
+
+                    // Envoyer une requête AJAX pour récupérer les lieux correspondants à la ville sélectionnée
+                    jQuery.ajax({
+                        url: '{{ path('ville_recuperer_lieux') }}',
+                        type: 'GET',
+                        data: {villeId: villeId},
+                        dataType: 'json',
+                        success: function (response) {
+                            // Effacer les options actuelles du champ Lieu
+                            lieuSelect.empty();
+
+                            // Ajouter les nouvelles options basées sur la réponse de la requête AJAX
+                            response.forEach(function (lieu) {
+                                lieuSelect.append('<option value="' + lieu.id + '">' + lieu.nom + '</option>');
+                                document.getElementById("codePost").innerHTML = "Code postal : " + lieu.codePostal;
+                            });
+                        },
+                        error: function () {
+                            // Gérer les erreurs de la requête AJAX si nécessaire
+                        }
+                    });
+                });
+
+                lieuSelect.change(function() {
+                    var lieuId = jQuery(this).val();
+
+                    // Envoyer une requête AJAX pour récupérer les détails du lieu sélectionné
+                    jQuery.ajax({
+                        url: '{{ path('lieu_recuperer_rue') }}',
+                        type: 'GET',
+                        data: {lieuId: lieuId},
+                        dataType: 'json',
+                        success: function (response) {
+                            // Mettre à jour la valeur de la rue avec le détail du lieu sélectionné
+                            var rueInput = jQuery('#sortie_rue');
+                            rueInput.val(response.rue);
+                            document.getElementById("rue").innerHTML = "Rue : " + response.rue;
+                        },
+                        error: function () {
+                            // Gérer les erreurs de la requête AJAX si nécessaire
+                        }
+                    });
+                });
+            });}
+    </script>
     <script>
         function confirmCancellation(sortieId) {
             var confirmation = confirm("Voulez-vous vraiment annuler cette sortie ?");
@@ -32,9 +90,5 @@
 {% endblock %}
 
 {% block title %}
-
-{% endblock %}
-
-{% block javascripts %}
 
 {% endblock %}
