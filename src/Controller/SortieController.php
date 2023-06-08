@@ -121,13 +121,9 @@ class SortieController extends AbstractController
         $etatCreee = $etatRepository->findOneBy(['libelle' => 'Créée']);
         $username = $this->getUser()->getUserIdentifier();
         $participant = $participantRepository->findOneBy(['username' => $username]);
-//        $latitude= 10;
-//        $longitude= 10;
-//        dump("latitude:" . $latitude . "longitude:" . $longitude);
 
         $latitude = $request->request->get('latitude');
         $longitude = $request->request->get('longitude');
-        dump("latitude:" . $latitude . "longitude:" . $longitude);
 
         $sortie = new Sortie();
         $sortie->setDateHeureDebut(new \DateTime());
@@ -168,7 +164,6 @@ class SortieController extends AbstractController
         $sortieForm->handleRequest($request);
 
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
-            dump($sortie->getLieu());
             $sortie->getLieu()->setLatitude($latitude);
             $sortie->getLieu()->setLongitude($longitude);
             $sortieRepository->save($sortie, true);
