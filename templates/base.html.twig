@@ -23,6 +23,7 @@
 </head>
 
 <body>
+
 <div class="container">
     <header>
         {{ include('menu/nav.html.twig') }}
@@ -31,7 +32,11 @@
     <main>
         {% block body %}C'est la base{% endblock %}
     </main>
+    <footer class="copy">
+        <p>&copy; Jecothi 2023</p>
+    </footer>
 </div>
+
 
 <!-- Inclure les scripts JavaScript requis -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
