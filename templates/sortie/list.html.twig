@@ -4,103 +4,126 @@
     <br>
     <h3>Liste des sorties !</h3>
     <h5>Date du jour: {{ date('now')| date('d/m/y') }}</h5>
-    <h5>Participant: {{ app.user.nom}} </h5>
+    <h5>Participant: {{ app.user.nom }} </h5>
 
+    <br>
     <form action="{{ path('sortie_list') }}" method="GET">
-        <h6>Filtrer les sorties</h6>
+        <h4>Filtrer les sorties :</h4>
 
-        <label for="campus">Campus:</label>
-        <select name="campus" id="campus">
-            <option value="">Aucun</option>
-            {% for campus in campusList %}
-                {% if campus.id == campusChoix %}
-                    <option value="{{ campus.id }}" selected>{{ campus.nom }}</option>
-                {% else %}
-                    <option value="{{ campus.id }}">{{ campus.nom }}</option>
-                {% endif %}
-            {% endfor %}
-        </select>
+<div class="rech_check">
+        <div class="recherche">
+            <label for="campus">Campus:</label>
+            <select name="campus" id="campus">
+                <option value="">Aucun</option>
+                {% for campus in campusList %}
+                    {% if campus.id == campusChoix %}
+                        <option value="{{ campus.id }}" selected>{{ campus.nom }}</option>
+                    {% else %}
+                        <option value="{{ campus.id }}">{{ campus.nom }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
 
         <label for="recherche">Le nom de la sortie contient : </label>
         <input type="text" name="q" id="recherche" value="{{ searchQuery ?? '' }}" placeholder="Rechercher une sortie">
 
 
-        <label for="dateDebut">Date de début :</label>
-        <input type="date" id="dateDebut" name="dateDebut" value="{{ dateDebut ?? '' }}">
+            <label for="dateDebut">Date de début :</label>
+            <input type="date" id="dateDebut" name="dateDebut" value="{{ dateDebut ?? '' }}">
 
-        <label for="dateFin">Date de fin :</label>
-        <input type="date" id="dateFin" name="dateFin" value="{{ dateFin ?? '' }}">
+            <label for="dateFin">Date de fin :</label>
+            <input type="date" id="dateFin" name="dateFin" value="{{ dateFin ?? '' }}">
+        </div>
 
-        <label for="organisateur">Sorties dont je suis l'organisateur/trice :</label>
-        <input type="checkbox" id="organisateur" name="organisateur" {% if organisateur %}checked{% endif %}>
 
-        <label for="inscrit">Sorties auxquelles je suis inscrit/e :</label>
-        <input type="checkbox" id="inscrit" name="inscrit" {% if inscrit %}checked{% endif %}>
-
-        <label for="nonInscrit">Sorties auxquelles je ne suis pas inscrit/e :</label>
-        <input type="checkbox" id="nonInscrit" name="nonInscrit" {% if nonInscrit %}checked{% endif %}>
-
-        <label for="passees">Sorties passées :</label>
-        <input type="checkbox" id="passees" name="passees" {% if passees %}checked{% endif %}>
+        <div class="check">
+            <div class="check1">
+                <label for="organisateur">Sorties dont je suis l'organisateur/trice :</label>
+                <input type="checkbox" id="organisateur" name="organisateur" {% if organisateur %}checked{% endif %}>
+            </div>
+            <div class="check2">
+                <label for="inscrit">Sorties auxquelles je suis inscrit/e :</label>
+                <input type="checkbox" id="inscrit" name="inscrit" {% if inscrit %}checked{% endif %}>
+            </div>
+            <div class="check3">
+                <label for="nonInscrit">Sorties auxquelles je ne suis pas inscrit/e :</label>
+                <input type="checkbox" id="nonInscrit" name="nonInscrit" {% if nonInscrit %}checked{% endif %}>
+            </div>
+            <div class="check4">
+                <label for="passees">Sorties passées :</label>
+                <input type="checkbox" id="passees" name="passees" {% if passees %}checked{% endif %}>
+            </div>
+        </div>
+</div>
+        <div class="bouton-recherche">
+        <button class="btn btn-outline-primary" type="submit">Rechercher</button>
+        </div>
 
         <button type="submit">Rechercher</button>
     </form>
 
-
     {% if sorties is not empty %}
-    {# bootstrap tableau = class="table table-hover table-bordered" #}
-    <div class="container-sorties">
-        <table>
-        <thead>
-            <tr>
-                <th>Nom de la sortie</th>
-                <th>Date de la sortie</th>
-                <th>date limite d'inscription</th>
-                <th>Inscrits/places</th>
-                <th>Etat</th>
-                <th>Inscrit</th>
-                <th>Organisateur</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-
-
-            {% for sortie in sorties %}
-                {% if sortie.etat.libelle is not same as 'Historisée' and sortie.etat.libelle is not same as 'Créée' %}
+        {# bootstrap tableau = class="table table-hover table-bordered" #}
+        <div class="container-sorties">
+            <table>
+                <thead>
                 <tr>
-                    <td><a href="{{ path('sortie_details', {'id': sortie.id}) }}">{{ sortie.nom }}</a></td>
-                    <td>{{ sortie.dateHeureDebut | date('d/m/y H:i') }}</td>
-                    <td>{{ sortie.dateLimiteInscription | date('d/m/y') }}</td>
-                    <td>{{ sortie.participants.count }}/{{ sortie.nbInscriptionsMax }}</td>
-                    <td>{{ sortie.etat.libelle }}</td>
-                    <td>{% if sortie.getParticipants().contains(app.user) %}X{% endif %}</td>
-                    <td> <a class="link_button" href="{{ path('participant_show', {'id': sortie.participant.id}) }}">{{ sortie.participant.userIdentifier }}</a></td>
-
-                    <td>
-                        {% if sortie.participant.id is not same as(app.user.id) %}
-                            <a class="btn btn-outline-primary" href="{{ path('sortie_details', {'id': sortie.id}) }}">Afficher</a>
-                            {% if sortie.getParticipants().contains(app.user) %}
-                                <a class="btn btn-outline-primary" href="{{ path('sortie_desinscription', {'sortieId': sortie.id, 'redirectToList': true}) }}">Se désinscrire</a>
-                            {% else %}
-                                {% if sortie.getParticipants.count<sortie.getNbInscriptionsMax() and sortie.etat.libelle == 'Ouverte' %}
-                                <a class="btn btn-outline-primary" href="{{ path('sortie_inscription', {'sortieId': sortie.id,'redirectToList': true}) }}" >S'inscrire</a>
-                            {% endif %}
-                            {% endif %}
-                        {% endif %}
-                        <div class="button-tab-container">
-                        {% if sortie.participant.id is same as(app.user.id) %}
-                            <a class="btn btn-outline-primary" href="{{ path('sortie_update', {'id':sortie.id}) }}">Modifier</a>
-                            <a class="btn btn-outline-primary" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a>
-                        {% endif %}
-                        </div>
-                    </td>
+                    <th>Nom de la sortie</th>
+                    <th>Date de la sortie</th>
+                    <th>date limite d'inscription</th>
+                    <th>Inscrits/places</th>
+                    <th>Etat</th>
+                    <th>Inscrit</th>
+                    <th>Organisateur</th>
+                    <th>Actions</th>
                 </tr>
-                {% endif %}
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+
+
+                {% for sortie in sorties %}
+                    {% if sortie.etat.libelle is not same as 'Historisée' and sortie.etat.libelle is not same as 'Créée' %}
+                        <tr>
+                            <td><a href="{{ path('sortie_details', {'id': sortie.id}) }}">{{ sortie.nom }}</a></td>
+                            <td>{{ sortie.dateHeureDebut | date('d/m/y H:i') }}</td>
+                            <td>{{ sortie.dateLimiteInscription | date('d/m/y') }}</td>
+                            <td>{{ sortie.participants.count }}/{{ sortie.nbInscriptionsMax }}</td>
+                            <td>{{ sortie.etat.libelle }}</td>
+                            <td>{% if sortie.getParticipants().contains(app.user) %}X{% endif %}</td>
+                            <td><a class="link_button"
+                                   href="{{ path('participant_show', {'id': sortie.participant.id}) }}">{{ sortie.participant.userIdentifier }}</a>
+                            </td>
+
+                            <td>
+                                {% if sortie.participant.id is not same as(app.user.id) %}
+                                    <a class="btn btn-outline-primary"
+                                       href="{{ path('sortie_details', {'id': sortie.id}) }}">Afficher</a>
+                                    {% if sortie.getParticipants().contains(app.user) %}
+                                        <a class="btn btn-outline-primary"
+                                           href="{{ path('sortie_desinscription', {'sortieId': sortie.id, 'redirectToList': true}) }}">Se
+                                            désinscrire</a>
+                                    {% else %}
+                                        {% if sortie.getParticipants.count<sortie.getNbInscriptionsMax() and sortie.etat.libelle == 'Ouverte' %}
+                                            <a class="btn btn-outline-primary"
+                                               href="{{ path('sortie_inscription', {'sortieId': sortie.id,'redirectToList': true}) }}">S'inscrire</a>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                                <div class="button-tab-container">
+                                    {% if sortie.participant.id is same as(app.user.id) %}
+                                        <a class="btn btn-outline-primary"
+                                           href="{{ path('sortie_update', {'id':sortie.id}) }}">Modifier</a>
+                                        <a class="btn btn-outline-primary"
+                                           href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% else %}
         <p>Aucune sorties trouvées. N'hésite pas à en créé une !</p>
     {% endif %}

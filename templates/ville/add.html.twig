@@ -6,8 +6,9 @@
 
 {% block body %}
     <div>
-        {{ form_start(villeForm)}}
-        {{ form_widget(villeForm)}}
+
+        {{ form_start(villeForm)}}<br>
+        {{ form_widget(villeForm)}}<br>
         <button class="btn btn-outline-primary">{% block buttonLabel %}Ajouter une ville{% endblock %}</button>
         {{ form_end(villeForm)}}
     </div>
