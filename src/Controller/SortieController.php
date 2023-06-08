@@ -13,6 +13,7 @@ use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
+use ContainerEcJYw1h\get_Console_Command_About_LazyService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -120,13 +121,19 @@ class SortieController extends AbstractController
         $etatCreee = $etatRepository->findOneBy(['libelle' => 'Créée']);
         $username = $this->getUser()->getUserIdentifier();
         $participant = $participantRepository->findOneBy(['username' => $username]);
+//        $latitude= 10;
+//        $longitude= 10;
+//        dump("latitude:" . $latitude . "longitude:" . $longitude);
+
+        $latitude = $request->request->get('latitude');
+        $longitude = $request->request->get('longitude');
+        dump("latitude:" . $latitude . "longitude:" . $longitude);
 
         $sortie = new Sortie();
         $sortie->setDateHeureDebut(new \DateTime());
         $sortie->setDateLimiteInscription(new \DateTime());
         $sortie->setParticipant($participant);
         $sortie->setEtat($etatCreee);
-
 
         $villes = $villeRepository->findAll();
 
@@ -138,7 +145,6 @@ class SortieController extends AbstractController
         $lieu = new Lieu();
         $lieuForm = $this->createForm(LieuType::class, $lieu);
         $lieuForm->handleRequest($request);
-
 
 
         if ($lieuForm->isSubmitted() && $lieuForm->isValid()) {
@@ -156,11 +162,15 @@ class SortieController extends AbstractController
         if ($lieuId) {
             $lieu = $lieuRepository->find($lieuId);
             $sortie->setLieu($lieu);
+
         }
 
         $sortieForm->handleRequest($request);
 
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+            dump($sortie->getLieu());
+            $sortie->getLieu()->setLatitude($latitude);
+            $sortie->getLieu()->setLongitude($longitude);
             $sortieRepository->save($sortie, true);
             $this->addFlash('success', 'La sortie a été ajoutée avec succès.');
             // Vous pouvez rediriger vers la liste des sorties ou une autre page si nécessaire
@@ -176,7 +186,7 @@ class SortieController extends AbstractController
 
 
     #[Route('/update/{id}', name: 'update', requirements: ["id" => "\d+"])]
-    public function update(int $id,VilleRepository $villeRepository, SortieRepository $sortieRepository, Request $request, ParticipantRepository $participantRepository)
+    public function update(int $id, VilleRepository $villeRepository, SortieRepository $sortieRepository, Request $request, ParticipantRepository $participantRepository)
     {
 
         $sortie = $sortieRepository->find($id);
@@ -318,15 +328,16 @@ class SortieController extends AbstractController
             'sortie' => $sortie
         ]);
     }
+
     #[Route('/publish/{id}', name: 'publish', requirements: ["id" => "\d+"])]
-    public function publish(int $id, SortieRepository $sortieRepository,EtatRepository $etatRepository, ParticipantRepository $participantRepository)
+    public function publish(int $id, SortieRepository $sortieRepository, EtatRepository $etatRepository, ParticipantRepository $participantRepository)
     {
 
         $sortie = $sortieRepository->find($id);
         $username = $this->getUser()->getUserIdentifier();
         $participant = $participantRepository->findOneBy(['username' => $username]);
         $Ouverte = $etatRepository->findOneBy(['libelle' => 'Ouverte']);
-        
+
         if ($sortie->getParticipant()->getId() !== $participant->getId()) {
             return $this->render('sortie/show.html.twig', [
                 'sortie' => $sortie

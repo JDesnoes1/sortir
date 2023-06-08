@@ -56,10 +56,6 @@
                 </button>
             {% endif %}
 
-
-
-
-
             {% for flashMessage in app.session.flashBag.get('success') %}
                 <div class="alert alert-success">
                     {{ flashMessage }}
@@ -80,7 +76,7 @@
             }).addTo(map);
 
             //Possibilité d'ajouter un marker avec les longitudes et latitudes
-            var marker = L.marker([48.858370, 2.294481]).addTo(map);
+            var marker = L.marker([{{ sortie.lieu.latitude }}, {{ sortie.lieu.longitude }}]).addTo(map);
 
         </script>
 
