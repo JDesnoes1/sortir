@@ -24,10 +24,9 @@
                 {% endfor %}
             </select>
 
+        <label for="recherche">Le nom de la sortie contient : </label>
+        <input type="text" name="q" id="recherche" value="{{ searchQuery ?? '' }}" placeholder="Rechercher une sortie">
 
-            <label for="recherche">Le nom de la sortie contient : </label>
-            <input type="text" name="q" id="recherche" value="{{ searchQuery ?? '' }}"
-                   placeholder="Rechercher une sortie">
 
             <label for="dateDebut">Date de début :</label>
             <input type="date" id="dateDebut" name="dateDebut" value="{{ dateDebut ?? '' }}">
@@ -60,6 +59,7 @@
         <button class="btn btn-outline-primary" type="submit">Rechercher</button>
         </div>
 
+        <button type="submit">Rechercher</button>
     </form>
 
     {% if sorties is not empty %}

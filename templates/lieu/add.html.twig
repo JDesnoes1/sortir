@@ -1,17 +1,89 @@
 {% extends 'baseSansNav.html.twig' %}
 
+
+
 {% block title %}
     {{ parent() }} | Ajouter lieu
 {% endblock %}
 
 {% block body %}
     <div>
-        {{ form_start(lieuForm)}}
-        {{ form_widget(lieuForm)}}
-        <button data-toggle="modal" data-target="#modalLieu">{% block buttonLabel %}Ajouter un lieu{% endblock %}</button>
-        {{ form_end(lieuForm)}}
+        {{ form_start(lieuForm) }}
+        {{ form_row(lieuForm.nom) }}
+        {{ form_row(lieuForm.rue, {'attr': {'id': 'autocomplete-input'}}) }}
+        <button class="btn btn-primary">{% block lieuButtonLabel %}Ajouter un lieu{% endblock %}</button>
+        {{ form_end(lieuForm) }}
     </div>
+
+    <script>
+        var rueInput = document.getElementById('rue-input');
+
+        rueInput.addEventListener('input', function () {
+            var searchText = rueInput.value;
+
+            // Envoyer une requête à l'API Adresse pour obtenir les suggestions d'autocomplétion
+            fetch('https://apiadresse.data.gouv.fr/search/?q=' + searchText)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    // Récupérer les suggestions d'autocomplétion
+                    var suggestions = data.features;
+
+                    // Effacer les suggestions précédentes
+                    var autocompleteDropdown = document.querySelector('.autocomplete-dropdown');
+                    if (autocompleteDropdown) {
+                        autocompleteDropdown.remove();
+                    }
+
+                    // Créer une liste déroulante pour les suggestions d'autocomplétion
+                    autocompleteDropdown = document.createElement('ul');
+                    autocompleteDropdown.className = 'autocomplete-dropdown';
+
+                    // Ajouter les suggestions à la liste déroulante
+                    suggestions.forEach(function (suggestion) {
+                        var option = document.createElement('li');
+                        option.innerText = suggestion.properties.label;
+                        option.addEventListener('click', function () {
+                            // Remplir le champ "rue" avec la suggestion sélectionnée
+                            input.value = suggestion.properties.label;
+
+                            // Remplir les champs "latitude" et "longitude" avec les valeurs de la suggestion
+                            var latitudeField = document.querySelector('.autocomplete-latitude');
+                            var longitudeField = document.querySelector('.autocomplete-longitude');
+                            if (latitudeField && longitudeField) {
+                                latitudeField.value = suggestion.geometry.coordinates[1];
+                                longitudeField.value = suggestion.geometry.coordinates[0];
+                            }
+
+                            // Faites quelque chose avec la valeur de la rue (par exemple, soumettre le formulaire)
+                            console.log('Rue : ' + suggestion.properties.label);
+
+                            // Effacer la liste déroulante
+                            autocompleteDropdown.remove();
+                        });
+
+                        autocompleteDropdown.appendChild(option);
+                    });
+
+                    // Ajouter la liste déroulante à la page
+                    document.body.appendChild(autocompleteDropdown);
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+        });
+
+        // Gérer la fermeture de la liste déroulante lorsque l'utilisateur clique en dehors du champ "rue"
+        document.addEventListener('click', function (event) {
+            var target = event.target;
+
+            if (!target.classList.contains('autocomplete-input')) {
+                var autocompleteDropdown = document.querySelector('.autocomplete-dropdown');
+                if (autocompleteDropdown) {
+                    autocompleteDropdown.remove();
+                }
+            }
+        });
+    </script>
 {% endblock %}
-
-
-
