@@ -37,7 +37,6 @@ class ParticipantController extends AbstractController
         ]);
     }
 
-
     #[Route('participant/update/{id}', name: 'update')]
     public function update($id, Request $request,
                            ParticipantRepository $participantRepository,
@@ -45,18 +44,17 @@ class ParticipantController extends AbstractController
                            UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $participant = $participantRepository->find($id);
-
         // Créer le formulaire de modification
-        $form = $this->createForm(RegistrationFormType::class, $participant);
 
+        $form = $this->createForm(RegistrationFormType::class, $participant);
         // Gérer la soumission du formulaire
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-
             /**
              * @var UploadedFile $file
              */
+
             $file = $form->get('photo')->getData();
 
             if ($file) {
@@ -70,10 +68,9 @@ class ParticipantController extends AbstractController
                     $form->get('Password')->getData()
                 )
             );
-
             $participantRepository->save($participant, true);
-
-                return $this->redirectToRoute('participant_show', ['id' => $participant->getId(),
+                return $this->redirectToRoute('participant_show', [
+                    'id' => $participant->getId(),
                     'participant' => $participant
                 ]);
         }

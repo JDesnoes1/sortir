@@ -36,7 +36,8 @@
                 </li>
 
             {% endif %}
-            <li class="imgProril">
+
+            <li class="imgProfil">
                 {% if app.user.photo %}
                     <img class="compte" style="height: 40px; width: 40px; border-radius: 50%"
                          src="{{ asset('img/'~app.user.photo) }}" alt="{{ app.user.nom }}">
