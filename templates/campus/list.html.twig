@@ -1,34 +1,52 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
+<br>
     <h2>Liste des campus</h2>
+    <br>
     <form action="{{ path('campus_list') }}" method="GET">
         <label for="recherche">Le nom du campus contient : </label>
-        <input class="input" type="text" name="q" id="recherche" value="{{ searchQuery ?? '' }}" placeholder="Rechercher un campus">
-        <button type="submit">Rechercher</button>
+        <input class="input" type="text" name="q" id="recherche" value="{{ searchQuery ?? '' }}"
+               placeholder="Rechercher un campus">
+        <button class="btn btn-outline-primary" type="submit">Rechercher</button>
     </form>
+<br>
+    <div class="container-sorties">
+        <table>
+            <thead>
+            <tr>
+                <th class="pad-gd text-centre">Campus</th>
+                <th class="pad-gd text-centre">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for campus in campus %}
+                <tr>
+                    <td>{{ campus.nom }}</td>
+                    <td>
+                        <a class="btn btn-outline-primary" href="{{ path('campus_update', {'id': campus.id}) }}">Modifier</a>
+                        <a class="btn btn-outline-primary" href="{{ path('campus_delete', {'id': campus.id}) }}">Supprimer</a>
+                    </td>
 
-    <ul>
-        {% for campus in campus %}
-            <br>
-            <li>Campus: {{ campus.nom }}</li>
-            <a href="{{ path('campus_update', {'id':campus.id}) }}">Modifier</a> | <a
-                href="{{ path('campus_delete', {'id': campus.id}) }}">Supprimer</a>
-            <br>
-        {% endfor %}
-    </ul>
-    <button id="plus-button" onclick="ajouter()">+</button>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-    <div id="campus-form" style="display: none;">
+
+
+    <!-- <button id="plus-button" onclick="ajouter()">+</button> -->
+
+    <div id="campus-form">
         {{ form_start(campusForm, {'action': path('campus_add')}) }}
         {{ form_widget(campusForm) }}
-        <button type="submit">Ajouter un campus</button>
+        <button class="btn btn-outline-primary" type="submit">Ajouter un campus</button>
         {{ form_end(campusForm) }}
     </div>
 
 
-    <script>
+   <!-- <script>
         function ajouter() {
             var form = document.getElementById("campus-form");
             var btn = document.getElementById("plus-button");
@@ -41,7 +59,7 @@
                 btn.innerHTML = "+";
             }
         }
-    </script>
+    </script> -->
 
 {% endblock %}
 
