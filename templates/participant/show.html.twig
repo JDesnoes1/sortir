@@ -7,6 +7,10 @@
     <div class="ShowUser">
         <div class="infos">
         <h3>Profil de {{ participant.userIdentifier }}</h3>
+            {% if app.user.photo %}
+                <img class="compte" style="height: 300px; width: 300px; border-radius: 15%; object-fit: cover"
+                     src="{{ asset('img/'~app.user.photo) }}" alt="{{ app.user.nom }}">
+            {% endif %}
         <p>Prenom : {{participant.prenom }}</p>
         <p>Nom : {{ participant.nom }}</p>
         <p>Telephone : {{ participant.telephone }}</p>
