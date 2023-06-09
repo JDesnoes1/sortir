@@ -22,11 +22,11 @@
             <div hidden id="latitude">Latitude :</div>
             <div hidden id="longitude">Longitude :</div>
             <div class="untest">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalLieu">
+                <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modalLieu">
                     Ajouter un lieu
                 </button>
                 <button type="submit"
-                        class="btn btn-primary">{% block buttonLabel %}Ajouter une sortie{% endblock %}</button>
+                        class="btn btn-outline-primary">{% block buttonLabel %}Ajouter une sortie{% endblock %}</button>
             </div>
             {{ form_end(sortieForm) }}
 
@@ -36,7 +36,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="modalLieuLabel">Ajouter un lieu</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button class="btn btn-outline-primary" type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -45,7 +45,7 @@
                             {{ form_row(lieuForm.nom) }}
                             {{ form_row(lieuForm.rue, {'attr': {'id': 'rueInput', 'longitude': 'longitude', 'latitude': 'latitude'}}) }}
 
-                            <button class="btn btn-primary">{% block lieuButtonLabel %}Ajouter un lieu{% endblock %}</button>
+                            <button class="btn btn-outline-primary">{% block lieuButtonLabel %}Ajouter un lieu{% endblock %}</button>
                             {{ form_end(lieuForm) }}
                         </div>
                     </div>

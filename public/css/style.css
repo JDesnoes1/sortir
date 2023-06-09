@@ -89,9 +89,16 @@ input{
 
 .deuxtest  {
     display: flex;
+    gap: 20px;
+    height: 60px;
 
   }
 
+.quatretest{
+    display: flex;
+    gap: 20px;
+
+}
 .infos{
     display: flex;
     flex-direction: column;

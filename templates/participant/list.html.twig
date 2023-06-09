@@ -32,20 +32,22 @@
                     <td>{{ participant.telephone }}</td>
                     <td>{% if participant.actif == 1 %}✔{% else %}❌{% endif %}</td>
                     <td>{{ participant.campus.nom }}</td>
-                    <td>
-                        <button>
-                            <a class="link_button" href="{{ path('participant_active', {'id': participant.id}) }}">
-                                {% if participant.actif == 1 %}
-                                    Passer en non actif
-                                {% else %}
-                                    Passer en actif
-                                {% endif %}
-                            </a>
+                    <td  class="deuxtest">
+                        <a class="btn btn-outline-primary"
+                           href="{{ path('participant_active', {'id': participant.id}) }}">
+                            {% if participant.actif == 1 %}
+                                Actif
+                            {% else %}
+                                Inactif
+                            {% endif %}
+                        </a>
+
+                        <button class="btn btn-outline-primary"
+                                onclick="confirmDelete('{{ path('participant_delete', {'id': participant.id}) }}')">
+                            Supprimer
                         </button>
                     </td>
-                    <td>
-                        <button onclick="confirmDelete('{{ path('participant_delete', {'id': participant.id}) }}')">Supprimer</button>
-                    </td>
+
                 </tr>
             {% endfor %}
             </tbody>
