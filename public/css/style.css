@@ -45,7 +45,7 @@
 }
 
 .container{
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     background-color: #FFFFFF;
     min-height: 100vh; /* Définit une hauteur minimale de 100% de la hauteur de la fenêtre */
     display: flex; /* Utilise un modèle de boîte flexible */
@@ -53,7 +53,7 @@
 }
 
 body{
-    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
     background-image: url('../img/fond-tile.jpg');
     background-repeat: repeat;
     background-size: 6%;
@@ -86,18 +86,32 @@ input{
     justify-content: center;
     align-items: center;
 }
-.compte{
-    padding-bottom: 30px;
-}
+
+.deuxtest  {
+    display: flex;
+
+  }
+
 .infos{
+    display: flex;
+    flex-direction: column;
     align-items: center;
     border: 2px solid #b0e0ef;
     border-radius: 8px;
     margin: 10px;
     padding: 10px;
-    width: 320px;
+    width: 450px;
 }
-
+.untest{
+    display: flex;
+    align-items: center;
+    align-content: center;
+}
+.troistest {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
 .sortie{
     //box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.1);
     border: 2px solid #b0e0ef;
@@ -126,38 +140,39 @@ input{
 }
 
 /******** TABLEAU ********/
-.nomSortie{
 
-}
-.button-tab-container{
-    display: inline-flex;
-}
 .container-sorties {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     margin-bottom: 50px;
 }
+
 .container-sorties table {
     width: 70%;
     border-collapse: collapse;
 }
+
 .container-sorties th,
 .container-sorties td {
     text-align: center;
     padding: 10px;
     border-right: 1px solid #ccc;
 }
+
 .container-sorties th:last-child,
 .container-sorties td:last-child {
     border-right: none;
 }
+
 .container-sorties thead {
     background-color: #3ebec1;
 }
+
 .container-sorties tbody tr:nth-child(odd) {
     background-color: rgba(234, 234, 234, 0.48);
 }
+
 @media screen and (max-width: 768px) {
     .container-sorties th,
     .container-sorties td {
@@ -211,5 +226,6 @@ li {
 
 #map {
     height: 400px;
-    width: 50%;
+    width: 100%;
 }
+
