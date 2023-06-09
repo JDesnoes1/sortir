@@ -31,6 +31,7 @@ class SortieController extends AbstractController
 
         $participantId = $this->getUser()->getId();
         $campusList = $campusRepository->findAll();
+
         $organisateur = $request->query->get('organisateur');
         $inscrit = $request->query->get('inscrit');
         $nonInscrit = $request->query->get('nonInscrit');
@@ -41,6 +42,9 @@ class SortieController extends AbstractController
         $dateDebut = $request->query->get('dateDebut');
         $dateFin = $request->query->get('dateFin');
 
+        // Effectuez la recherche en utilisant le repository
+        $sorties = $sortieRepository->searchSorties($searchQuery, $campus, $dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $passees, $participantId);
+
         $etatPassee = $etatRepository->findOneBy(['libelle' => 'Passée']);
         $etatCloturee = $etatRepository->findOneBy(['libelle' => 'Clôturée']);
         $etatEnCours = $etatRepository->findOneBy(['libelle' => 'Activité en cours']);
@@ -49,8 +53,6 @@ class SortieController extends AbstractController
         $etatAnnulee = $etatRepository->findOneBy(['libelle' => 'Annulée']);
         $etatCreee = $etatRepository->findOneBy(['libelle' => 'Créée']);
 
-        // Effectuez la recherche en utilisant le repository
-        $sorties = $sortieRepository->searchSorties($searchQuery, $campus, $dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $passees, $participantId);
         foreach ($sorties as $sortie) {
             $dateDebutSortie = $sortie->getDateHeureDebut();
             $dateFinInscription = $sortie->getDateLimiteInscription();
