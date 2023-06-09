@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<br>
+    <br>
     <h2>Liste des campus</h2>
     <br>
     <form action="{{ path('campus_list') }}" method="GET">
@@ -10,7 +10,7 @@
                placeholder="Rechercher un campus">
         <button class="btn btn-outline-primary" type="submit">Rechercher</button>
     </form>
-<br>
+    <br>
     <div class="container-sorties">
         <table>
             <thead>
@@ -20,50 +20,30 @@
             </tr>
             </thead>
             <tbody>
-            {% for campus in campus %}
+            {% for campusItem in campus %}
                 <tr>
-                    <td>{{ campus.nom }}</td>
+                    <td>{{ campusItem.nom }}</td>
                     <td>
-                        <a class="btn btn-outline-primary" href="{{ path('campus_update', {'id': campus.id}) }}">Modifier</a>
-                        <a class="btn btn-outline-primary" href="{{ path('campus_delete', {'id': campus.id}) }}">Supprimer</a>
+                        <a class="btn btn-outline-primary" href="{{ path('campus_update', {'id': campusItem.id}) }}">Modifier</a>
+                        <a class="btn btn-outline-primary" href="{{ path('campus_delete', {'id': campusItem.id}) }}">Supprimer</a>
                     </td>
-
                 </tr>
             {% endfor %}
+            <tr>
+                <td>
+                    {{ form_start(campusForm, {'action': path('campus_add')}) }}
+                    {{ form_row(campusForm.nom) }}
+                </td>
+                <td>
+                    <button class="btn btn-outline-primary" type="submit">Ajouter un campus</button>
+                    {{ form_end(campusForm) }}
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>
-
-
-
-    <!-- <button id="plus-button" onclick="ajouter()">+</button> -->
-
-    <div id="campus-form">
-        {{ form_start(campusForm, {'action': path('campus_add')}) }}
-        {{ form_widget(campusForm) }}
-        <button class="btn btn-outline-primary" type="submit">Ajouter un campus</button>
-        {{ form_end(campusForm) }}
-    </div>
-
-
-   <!-- <script>
-        function ajouter() {
-            var form = document.getElementById("campus-form");
-            var btn = document.getElementById("plus-button");
-
-            if (form.style.display === "none") {
-                form.style.display = "block";
-                btn.innerHTML = "-";
-            } else {
-                form.style.display = "none";
-                btn.innerHTML = "+";
-            }
-        }
-    </script> -->
-
 {% endblock %}
 
-    {% block title %}
+{% block title %}
 
-    {% endblock %}
-
+{% endblock %}

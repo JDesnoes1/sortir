@@ -31,18 +31,25 @@
                     </td>
                 </tr>
             {% endfor %}
+            <tr>
+                <td>
+                    {{ form_start(villeForm, {'action': path('ville_add')}) }}
+                    {{ form_row(villeForm.nom) }}
+                </td>
+                <td>
+                    {{ form_row(villeForm.codePostal) }}
+                </td>
+                <td>
+                    <button class="btn btn-outline-primary" type="submit">Ajouter une ville</button>
+                    {{ form_end(villeForm) }}
+                </td>
+            </tr>
+
             </tbody>
         </table>
     </div>
 
 
-
-    <div id="ville-form" >
-        {{ form_start(villeForm, {'action': path('ville_add')}) }}
-        {{ form_widget(villeForm) }}
-        <button class="btn btn-outline-primary" type="submit">Ajouter une ville</button>
-        {{ form_end(villeForm) }}
-    </div>
 
 
 {% endblock %}
