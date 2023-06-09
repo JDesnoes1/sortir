@@ -1,10 +1,16 @@
 {% form_theme form 'vues/theme/form_theme.html.twig' %}
 
-<h2>{% block h2 %}{% endblock %}</h2>
+<div class="untest">
+    <div class="row justify-content-end">
+        <div class="col-md-1">
+            <div class="infos mt-5">
+                <h2>{% block h2 %}{% endblock %}</h2>
 
-<div>
-    {{ form_start(form)}}
-    {{ form_widget(form)}}
-    <button class="btn btn-outline-primary">{% block buttonLabel %}{% endblock %}</button>
-    {{ form_end(form)}}
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <button class="btn btn-outline-primary mt-3">{% block buttonLabel %}{% endblock %}</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
 </div>

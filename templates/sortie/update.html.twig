@@ -1,25 +1,29 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<div>
-    {{ form_start(sortieForm) }}
-    {{ form_widget(sortieForm) }}
-    <div id="codePost">Code postal : </div>
-    <div id="rue">Rue : </div>
+    <div class="ShowUser">
+        <div class="infos">
+            <h2>Modifier la sortie !</h2>
+            {{ form_start(sortieForm) }}
+            {{ form_widget(sortieForm) }}
+            <div id="codePost">Code postal :</div>
+            <div id="rue">Rue :</div>
 
-    {% if (sortie.etat.libelle is same as "Créée") %}
-        <a href="{{ path('sortie_publish', {'id': sortie.id})}}" class="btn btn-outline-primary" >Publier</a>
-        <a class="btn btn-outline-primary" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a>
-    {% endif %}
-    {% if (sortie.etat.libelle is same as "Ouverte") %}
-    <a class="btn btn-outline-primary" onclick="confirmCancellation()">Annuler la sortie</a>
-    {% endif %}
-    <a href="{{ path('sortie_list')}}" class="btn btn-outline-primary" >Retour</a>
+            {% if (sortie.etat.libelle is same as "Créée") %}
+                <a href="{{ path('sortie_publish', {'id': sortie.id}) }}" class="btn btn-outline-primary">Publier</a>
+                <a class="btn btn-outline-primary" href="{{ path('sortie_delete', {'id':sortie.id}) }}">Supprimer</a>
+            {% endif %}
+            {% if (sortie.etat.libelle is same as "Ouverte") %}
+                <a class="btn btn-outline-primary" onclick="confirmCancellation()">Annuler la sortie</a>
+            {% endif %}
+            <a href="{{ path('sortie_list') }}" class="btn btn-outline-primary">Retour</a>
+        </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         var villeSelect = jQuery('#sortie_ville');
-        if (villeSelect!==null){
+        if (villeSelect !== null) {
             jQuery(document).ready(function () {
                 // Récupérer les éléments HTML des champs Ville et Lieu
                 var villeSelect = jQuery('#sortie_ville');
@@ -51,7 +55,7 @@
                     });
                 });
 
-                lieuSelect.change(function() {
+                lieuSelect.change(function () {
                     var lieuId = jQuery(this).val();
 
                     // Envoyer une requête AJAX pour récupérer les détails du lieu sélectionné
@@ -71,7 +75,8 @@
                         }
                     });
                 });
-            });}
+            });
+        }
     </script>
     <script>
         function confirmCancellation(sortieId) {
@@ -89,6 +94,6 @@
 
 {% endblock %}
 
-{% block title %}
+    {% block title %}
 
-{% endblock %}
+    {% endblock %}

@@ -1,17 +1,14 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <br>
-<div class="container-sorties">
-    <div class="infosSortie">
     {% embed 'vues/form/default_form.twig' with {'form':registrationForm} %}
 
         {% block h2 %} Inscription ! {% endblock %}
         {% block buttonLabel %} Inscription {% endblock %}
 
     {% endembed %}
-    </div>
-    </div>
+
+
 
 {% endblock %}
 
