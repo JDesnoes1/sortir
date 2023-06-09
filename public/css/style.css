@@ -89,6 +89,8 @@ input{
 
 .deuxtest  {
     display: flex;
+    gap: 20px;
+    height: 60px;
 
   }
 
