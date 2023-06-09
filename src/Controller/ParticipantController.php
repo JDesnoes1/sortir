@@ -80,7 +80,7 @@ class ParticipantController extends AbstractController
         ]);
     }
 
-    #[Route('participant/toggle-active/{id}', name: 'toggle_active')]
+    #[Route('admin/participant/active/{id}', name: 'active')]
     public function toggleActive($id, ParticipantRepository $participantRepository): Response
     {
         $participant = $participantRepository->find($id);
@@ -93,7 +93,7 @@ class ParticipantController extends AbstractController
         return $this->redirectToRoute('participant_list');
     }
 
-    #[Route('participant/delete/{id}', name: 'delete')]
+    #[Route('admin/participant/delete/{id}', name: 'delete')]
     public function delete($id, ParticipantRepository $participantRepository, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $participant = $participantRepository->find($id);

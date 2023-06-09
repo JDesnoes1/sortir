@@ -34,7 +34,7 @@
                     <td>{{ participant.campus.nom }}</td>
                     <td>
                         <button>
-                            <a class="link_button" href="{{ path('participant_toggle_active', {'id': participant.id}) }}">
+                            <a class="link_button" href="{{ path('participant_active', {'id': participant.id}) }}">
                                 {% if participant.actif == 1 %}
                                     Passer en non actif
                                 {% else %}
