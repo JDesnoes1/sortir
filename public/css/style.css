@@ -94,6 +94,11 @@ input{
 
   }
 
+.quatretest{
+    display: flex;
+    gap: 20px;
+
+}
 .infos{
     display: flex;
     flex-direction: column;
