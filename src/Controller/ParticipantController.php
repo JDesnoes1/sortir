@@ -94,7 +94,9 @@ class ParticipantController extends AbstractController
     }
 
     #[Route('admin/participant/delete/{id}', name: 'delete')]
-    public function delete($id, ParticipantRepository $participantRepository, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\RedirectResponse
+    public function delete($id, ParticipantRepository $participantRepository,
+                           EntityManagerInterface $entityManager):
+                            \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $participant = $participantRepository->find($id);
 
